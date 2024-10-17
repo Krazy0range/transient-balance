@@ -2,13 +2,33 @@
 #include<stdint.h>
 #include<stdio.h>
 #include<time.h>
+#include <fcntl.h>
 
+#include "network.h"
 #include "utils.h"
 
 void disp_t(time_t);
 
 int main(int argc, char *argv[])
 {
+  // FILE *response;
+  // response = fopen("response.txt", "w");
+
+  int response_fd = open("response.txt", O_WRONLY | O_TRUNC | O_CREAT, S_IWUSR);
+
+  if (wget("example.com", response_fd) != WGET_EXIT_SUCCESS)
+  {
+    perror("whoopsie occurred uwu");
+    // fclose(response);
+    close(response_fd);
+    return 1;
+  }
+
+  // fclose(response);
+  close(response_fd);
+
+  return 0; /* :trollface: */
+
   time_t t_curr;
   time_t t_last;
   time(&t_curr);
