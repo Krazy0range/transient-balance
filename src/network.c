@@ -11,14 +11,14 @@
 
 #include "network.h"
 
-int wget(char *hostname, int response_fd)
+int wget(char *hostname, char *path, int response_fd)
 {
     /* complicated network stuff */
 
     char buffer[BUFFER_SIZE];
     char request[MAX_REQUEST_LEN];
     // char request_template[] = "GET / HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n";
-    char request_template[] = "GET / HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n";
+    char request_template[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n";
     int request_len;
     ssize_t nbytes_total, nbytes_last;
     struct protoent *protoent;
@@ -30,7 +30,7 @@ int wget(char *hostname, int response_fd)
 
     /* poop hostname into template */
 
-    request_len = snprintf(request, MAX_REQUEST_LEN, request_template, hostname);
+    request_len = snprintf(request, MAX_REQUEST_LEN, request_template, path, hostname);
     if (request_len >= MAX_REQUEST_LEN)
     {
         // fprintf(stderr, "request length too large: %d\n", request_len);
@@ -65,8 +65,10 @@ int wget(char *hostname, int response_fd)
         // return EXIT_FAILURE;
         return WGET_EXIT_FAILURE_gethostbyname;
     }
+
     
     in_addr = inet_addr(inet_ntoa(*(struct in_addr*)*(hostent->h_addr_list)));
+    // in_addr = inet_addr("93.184.215.14");
     if (in_addr == (in_addr_t) - 1)
     {
         // fprintf(stderr, "error: inet_addr(\n%s\n)\n", *(hostent->h_addr_list));

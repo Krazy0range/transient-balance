@@ -17,6 +17,6 @@
 #define WGET_EXIT_FAILURE_write                 8
 #define WGET_EXIT_FAILURE_read                  9
 
-int wget(char *hostname, int response_fd);
+int wget(char *hostname, char *path, int response_fd);
 
 #endif

@@ -7,6 +7,13 @@
 #include "network.h"
 #include "utils.h"
 
+#define WEATHER_API_URL "https://api.open-meteo.com/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,cloud_cover"
+#define WEATHER_API_URL_SHORT "https://api.open-meteo.com/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m"
+#define WEATHER_API_URL_SHORT_2 "api.open-meteo.com/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m"
+#define WEATHER_API_URL_HOSTNAME "api.open-meteo.com"
+#define WEATHER_API_URL_PATH_SHORT "/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m"
+#define WEATHER_API_URL_PATH_LONG "/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,cloud_cover"
+
 void disp_t(time_t);
 
 int main(int argc, char *argv[])
@@ -15,10 +22,10 @@ int main(int argc, char *argv[])
   // response = fopen("response.txt", "w");
 
   int response_fd = open("response.txt", O_WRONLY | O_TRUNC | O_CREAT, S_IWUSR);
-
-  if (wget("example.com", response_fd) != WGET_EXIT_SUCCESS)
+  int err;
+  if ((err = wget(WEATHER_API_URL_HOSTNAME, WEATHER_API_URL_PATH_LONG, response_fd)) != WGET_EXIT_SUCCESS)
   {
-    perror("whoopsie occurred uwu");
+    printf("whoopsie occurred uwu\nerror number: %d\n", err);
     // fclose(response);
     close(response_fd);
     return 1;
