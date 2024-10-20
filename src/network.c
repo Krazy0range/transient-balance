@@ -11,7 +11,7 @@
 
 #include "network.h"
 
-int wget(char *hostname, char *path, int response_fd)
+int network_response(char *hostname, char *path, int response_fd)
 {
     /* complicated network stuff */
 
@@ -35,7 +35,7 @@ int wget(char *hostname, char *path, int response_fd)
     {
         // fprintf(stderr, "request length too large: %d\n", request_len);
         // return EXIT_FAILURE;
-        return WGET_EXIT_FAILURE_request_len_too_large;
+        return NETWORK_EXIT_FAILURE_request_len_too_large;
     }
 
     /* build socket */
@@ -45,7 +45,7 @@ int wget(char *hostname, char *path, int response_fd)
     {
         // perror("getprotobyname");
         // return EXIT_FAILURE;
-        return WGET_EXIT_FAILURE_getprotobyname;
+        return NETWORK_EXIT_FAILURE_getprotobyname;
     }
 
     socket_file_descriptor = socket(AF_INET, SOCK_STREAM, protoent->p_proto);
@@ -53,7 +53,7 @@ int wget(char *hostname, char *path, int response_fd)
     {
         // perror("socket");
         // return EXIT_FAILURE;
-        return WGET_EXIT_FAILURE_socket;
+        return NETWORK_EXIT_FAILURE_socket;
     }
 
     /* build address */
@@ -63,7 +63,7 @@ int wget(char *hostname, char *path, int response_fd)
     {
         // fprintf(stderr, "error: gethostbyname(\"%s\")\n", hostname);
         // return EXIT_FAILURE;
-        return WGET_EXIT_FAILURE_gethostbyname;
+        return NETWORK_EXIT_FAILURE_gethostbyname;
     }
 
     
@@ -73,7 +73,7 @@ int wget(char *hostname, char *path, int response_fd)
     {
         // fprintf(stderr, "error: inet_addr(\n%s\n)\n", *(hostent->h_addr_list));
         // return EXIT_FAILURE;
-        return WGET_EXIT_FAILURE_inet_addr;
+        return NETWORK_EXIT_FAILURE_inet_addr;
     }
 
     sockaddr_in.sin_addr.s_addr = in_addr;
@@ -86,7 +86,7 @@ int wget(char *hostname, char *path, int response_fd)
     {
         // perror("connect");
         // return EXIT_FAILURE;
-        return WGET_EXIT_FAILURE_connect;
+        return NETWORK_EXIT_FAILURE_connect;
     }
 
     /* send HTTP request */
@@ -99,7 +99,7 @@ int wget(char *hostname, char *path, int response_fd)
         {
             // perror("write");
             // return EXIT_FAILURE;
-            return WGET_EXIT_FAILURE_write;
+            return NETWORK_EXIT_FAILURE_write;
         }
         nbytes_total += nbytes_last;
     }
@@ -126,10 +126,54 @@ int wget(char *hostname, char *path, int response_fd)
     {
         // perror("read");
         // return EXIT_FAILURE;
-        return WGET_EXIT_FAILURE_read;
+        return NETWORK_EXIT_FAILURE_read;
     }
 
     close(socket_file_descriptor);
     // return EXIT_SUCCESS;
-    return WGET_EXIT_SUCCESS;
+    return NETWORK_EXIT_SUCCESS;
+}
+
+int response_body(FILE *response_file, FILE *body_file, int transfer_encoding)
+{
+    // return 0;
+    
+    /* convert file descriptors to FILE* :skull: */
+
+    // FILE *response_file = fdopen(response_fd, "r");
+    // FILE *body_file = fdopen(body_fd, "w");
+
+    fseek(response_file, 0, SEEK_SET); // stoopid
+    fseek(body_file, 0, SEEK_SET);
+
+    char *line = NULL;
+    size_t line_len;
+    uint8_t is_writing = 0;
+    uint8_t line_side = 1;
+
+    // progressively messier code go brrrr
+    // unhinged comments be wildin fr
+
+    while (getline(&line, &line_len, response_file) != EOF)
+    {
+        int empty_line = !strcmp(line, "\r\n");
+
+        if (is_writing)
+        {
+            line_side = !line_side; // only print alternate lines
+            if (line_side && !empty_line)
+                fprintf(body_file, "%s", line);
+        }
+
+        if (empty_line)
+            is_writing = 1;
+    }
+
+    if (!is_writing)
+    {
+        return NETWORK_EXIT_FAILURE_find_response_body;
+    }
+
+    return NETWORK_EXIT_SUCCESS;
+    
 }

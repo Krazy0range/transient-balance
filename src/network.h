@@ -6,17 +6,22 @@
 #define BUFFER_SIZE 1024
 #define MAX_REQUEST_LEN BUFSIZ
 
-#define WGET_EXIT_SUCCESS                       0
-#define WGET_EXIT_FAILURE                       1
-#define WGET_EXIT_FAILURE_request_len_too_large 2
-#define WGET_EXIT_FAILURE_getprotobyname        3
-#define WGET_EXIT_FAILURE_socket                4
-#define WGET_EXIT_FAILURE_gethostbyname         5
-#define WGET_EXIT_FAILURE_inet_addr             6
-#define WGET_EXIT_FAILURE_connect               7
-#define WGET_EXIT_FAILURE_write                 8
-#define WGET_EXIT_FAILURE_read                  9
+#define NETWORK_EXIT_SUCCESS                       0
+#define NETWORK_EXIT_FAILURE                       1
+#define NETWORK_EXIT_FAILURE_request_len_too_large 2
+#define NETWORK_EXIT_FAILURE_getprotobyname        3
+#define NETWORK_EXIT_FAILURE_socket                4
+#define NETWORK_EXIT_FAILURE_gethostbyname         5
+#define NETWORK_EXIT_FAILURE_inet_addr             6
+#define NETWORK_EXIT_FAILURE_connect               7
+#define NETWORK_EXIT_FAILURE_write                 8
+#define NETWORK_EXIT_FAILURE_read                  9
+#define NETWORK_EXIT_FAILURE_find_response_body    10
 
-int wget(char *hostname, char *path, int response_fd);
+// #define NETWORK_TRANSFER_ENCODING_NORMAL  0
+// #define NETWORK_TRANSFER_ENCODING_CHUNKED 1
+
+int network_response(char *hostname, char *path, int response_fd);
+int response_body(FILE *response_file, FILE *body_file, int transfer_encoding);
 
 #endif
