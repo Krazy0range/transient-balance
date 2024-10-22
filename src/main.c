@@ -58,10 +58,17 @@ int main(int argc, char *argv[])
     }
 
     /* load and parse json */
-    
-    load_weather(body_file);
+
+    weather_data *data = load_weather(body_file);
+
+    printf("latitude: %f\nlongitude: %f\nelevation: %d\n", data->latitude, data->longitude, data->elevation);
+    printf("timezone: %s\ntimezone_abbreviation: %s\n", data->timezone, data->timezone_abbreviation);
 
     /* cleanup */
+
+    // TODO replace with free_weather_data function
+    free(data->timezone);
+    free(data->timezone_abbreviation);
 
     fclose(response_file);
     fclose(body_file);
