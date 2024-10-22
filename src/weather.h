@@ -3,13 +3,6 @@
 
 #include <stdlib.h>
 
-/* 
- * weather information structs designed
- * around the 'open-meteo.com' api
- */
-
-// weather_data *get_weather_data();
-
 typedef struct _weather_data          weather_data;
 typedef struct _weather_current_units weather_current_units;
 typedef struct _weather_current       weather_current;
@@ -17,6 +10,16 @@ typedef struct _weather_hourly_units  weather_hourly_units;
 typedef struct _weather_hourly        weather_hourly;
 typedef struct _weather_daily_units   weather_daily_units;
 typedef struct _weather_daily         weather_daily;
+
+/* thicc boi */
+
+/* load weather data from json file */
+weather_data *load_weather(FILE *file);
+
+/* 
+ * weather information structs designed
+ * around the 'open-meteo.com' api
+ */
 
 struct _weather_data
 {

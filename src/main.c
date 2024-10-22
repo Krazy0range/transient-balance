@@ -6,6 +6,7 @@
 
 #include "network.h"
 #include "utils.h"
+#include "weather.h"
 
 #define WEATHER_API_URL "https://api.open-meteo.com/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,cloud_cover"
 #define WEATHER_API_URL_SHORT "https://api.open-meteo.com/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m"
@@ -19,13 +20,14 @@ void disp_t(time_t);
 
 int main(int argc, char *argv[])
 {
+    /* open files */
 
-    /* get weather data */
     int response_fd = open("response.txt", O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
     int body_fd     = open("body.txt",     O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
     int err;
     
     /* get api response */
+
     err = network_response(WEATHER_API_URL_HOSTNAME, WEATHER_API_URL_PATH_LONGER, response_fd);
     if (err != NETWORK_EXIT_SUCCESS)
     {
@@ -35,16 +37,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /* change out file descriptors for FILE pointers */
+    /* kinda stupid, probably rework this sometime lol */
+
     close(response_fd);
     close(body_fd);
 
     FILE *response_file = fopen("response.txt", "r");
-    FILE *body_file = fopen("body.txt", "w");
-
-    // close(response_fd);
-    // response_fd = open("response.txt", O_WRONLY | O_TRUNC | O_CREAT, S_IWUSR);
+    FILE *body_file = fopen("body.txt", "r+");
 
     /* put response body into a separate file */
+
     err = response_body(response_file, body_file, 1);
     if (err != NETWORK_EXIT_SUCCESS)
     {
@@ -53,6 +56,12 @@ int main(int argc, char *argv[])
         close(body_fd);
         return 2;
     }
+
+    /* load and parse json */
+    
+    load_weather(body_file);
+
+    /* cleanup */
 
     fclose(response_file);
     fclose(body_file);

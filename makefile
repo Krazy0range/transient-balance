@@ -1,7 +1,7 @@
 .PHONY: compile wget
 
 IFLAGS := -I src/ -I include/
-LFLAGS :=
+LFLAGS := -L lib/ -lcjson -rpath lib
 WFLAGS := -Wall -Wextra -Wno-unused-parameter -Wno-unused-variable
 EXEC := out
 

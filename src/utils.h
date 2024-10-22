@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <termios.h>
 
+char *file_to_string(FILE *file);
+
 void cursor_hide();
 void cursor_show();
 void reset_screen();

@@ -2,6 +2,21 @@
 
 #include "utils.h"
 
+char *file_to_string(FILE *file)
+{
+    char *buffer = 0;
+    long length;
+
+    fseek(file, 0, SEEK_END);
+    length = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    buffer = malloc(length);
+    fread (buffer, 1, length, file);
+    
+    return buffer;
+}
+
 void cursor_hide()
 {
   printf("\x1b[?25l");
