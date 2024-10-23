@@ -59,9 +59,9 @@ int main(int argc, char *argv[])
 
     /* load and parse json */
 
-    weather_data *data = load_weather(body_file);
+    weather_data *data = load_file_weather(body_file);
 
-    printf("latitude: %f\nlongitude: %f\nelevation: %d\n", data->latitude, data->longitude, data->elevation);
+    printf("latitude: %lf\nlongitude: %lf\nelevation: %lf\n", *data->latitude, *data->longitude, *data->elevation);
     printf("timezone: %s\ntimezone_abbreviation: %s\n", data->timezone, data->timezone_abbreviation);
 
     /* cleanup */

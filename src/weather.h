@@ -1,7 +1,7 @@
 #ifndef WEATHER_H
 #define WEATHER_H
 
-#include <stdlib.h>
+#include "cJSON/cJSON.h"
 
 typedef struct _weather_data          weather_data;
 typedef struct _weather_current_units weather_current_units;
@@ -11,10 +11,25 @@ typedef struct _weather_hourly        weather_hourly;
 typedef struct _weather_daily_units   weather_daily_units;
 typedef struct _weather_daily         weather_daily;
 
-/* thicc boi */
+/* functions */
 
-/* load weather data from json file */
-weather_data *load_weather(FILE *file);
+/* actually allocates and copies memory */
+
+void create_weather_data(weather_data *dest, weather_data *src);
+
+/* all this simply points to json bytes, doesn't copy anything! */
+
+weather_data *load_file_weather(FILE *json_file);
+weather_data *load_json_weather_data(cJSON *json_root);
+weather_current_units *load_json_weather_current_units(cJSON *json_root);
+weather_current *load_json_weather_current(cJSON *json_root);
+weather_hourly_units *load_json_weather_hourly_units(cJSON *json_root);
+weather_hourly *load_json_weather_hourly(cJSON *json_root);
+weather_daily_units *load_json_weather_daily_units(cJSON *json_root);
+weather_daily *load_json_weather_daily(cJSON *json_root);
+
+void _set_weather_data_num(double **dest, cJSON *json_src);
+void _set_weather_data_str(char **dest, cJSON *json_src);
 
 /* 
  * weather information structs designed
@@ -23,11 +38,11 @@ weather_data *load_weather(FILE *file);
 
 struct _weather_data
 {
-    float latitude;
-    float longitude;
+    double *latitude;
+    double *longitude;
+    double *elevation;
     char *timezone;
     char *timezone_abbreviation;
-    int elevation;
     struct _weather_current_units *current_units;
     struct _weather_current       *current;
     struct _weather_hourly_units  *hourly_units;
@@ -59,23 +74,23 @@ struct _weather_current_units
 
 struct _weather_current
 {
-    float time;
-    float interval;
-    float temperature_2m;
-    float relative_humidity_2m;
-    float apparent_temperature;
-    float is_day;
-    float precipitation;
-    float rain;
-    float showers;
-    float snowfall;
-    float weather_code;
-    float cloud_cover;
-    float pressure_msl;
-    float surface_pressure;
-    float wind_speed_10m;
-    float wind_direction_10m;
-    float wind_gusts_10m;
+    float *time;
+    float *interval;
+    float *temperature_2m;
+    float *relative_humidity_2m;
+    float *apparent_temperature;
+    float *is_day;
+    float *precipitation;
+    float *rain;
+    float *showers;
+    float *snowfall;
+    float *weather_code;
+    float *cloud_cover;
+    float *pressure_msl;
+    float *surface_pressure;
+    float *wind_speed_10m;
+    float *wind_direction_10m;
+    float *wind_gusts_10m;
 };
 
 struct _weather_hourly_units

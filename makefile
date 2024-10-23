@@ -11,7 +11,7 @@ compile:
 	$(GCC_CMD)
 
 debug:
-	$(GCC_CMD) -fsanitize=address
+	$(GCC_CMD) -fsanitize=address -v
 
 wget:
 	gcc -o wget wget.c

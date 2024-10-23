@@ -1,21 +1,22 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cJSON/cJSON.h"
-
 #include "weather.h"
 #include "utils.h"
 
-weather_data *load_weather(FILE *file)
+weather_data *load_file_weather(FILE *json_file)
 {
-    /* load json from file */
+    cJSON *json_root;
 
-    char *json_raw = file_to_string(file);
-
-    cJSON *json_root = cJSON_Parse(json_raw);
-
+    char *json_raw = file_to_string(json_file);
+    json_root = cJSON_Parse(json_raw);
     free(json_raw);
 
+    return load_json_weather_data(json_root);
+}
+
+weather_data *load_json_weather_data(cJSON *json_root)
+{
     if (json_root == NULL)
     {
         const char *err = cJSON_GetErrorPtr();
@@ -54,47 +55,63 @@ weather_data *load_weather(FILE *file)
     // TODO
     // TODO
 
+    /* top level data */
+
     cJSON *json_latitude;
     cJSON *json_longitude;
+    cJSON *json_elevation;
     cJSON *json_timezone;
     cJSON *json_timezone_abbreviation;
-    cJSON *json_elevation;
 
     json_latitude = cJSON_GetObjectItem(json_root, "latitude");
     json_longitude = cJSON_GetObjectItem(json_root, "longitude");
+    json_elevation = cJSON_GetObjectItem(json_root, "elevation");
     json_timezone = cJSON_GetObjectItem(json_root, "timezone");
     json_timezone_abbreviation = cJSON_GetObjectItem(json_root, "timezone_abbreviation");
-    json_elevation = cJSON_GetObjectItem(json_root, "elevation");
 
-    if (json_latitude && json_latitude->type == cJSON_Number)
-        data->latitude = (float) json_latitude->valuedouble;
+    _set_weather_data_num(&data->latitude, json_latitude);
+    _set_weather_data_num(&data->longitude, json_longitude);
+    _set_weather_data_num(&data->elevation, json_elevation);
+    _set_weather_data_str(&data->timezone, json_timezone);
+    _set_weather_data_str(&data->timezone_abbreviation, json_timezone_abbreviation);
+
+    /* current_units data */
+
+    cJSON *json_current_units;
+    cJSON *json_current;
+    cJSON *json_hourly_units;
+    cJSON *json_hourly;
+    cJSON *json_daily_units;
+    cJSON *json_daily;
     
-    if (json_longitude && json_longitude->type == cJSON_Number)
-        data->longitude = (float) json_longitude->valuedouble;
+    json_current_units = cJSON_GetObjectItem(json_root, "current_units");
+    json_current = cJSON_GetObjectItem(json_root, "current");
+    json_hourly_units = cJSON_GetObjectItem(json_root, "hourly_units");
+    json_hourly = cJSON_GetObjectItem(json_root, "hourly");
+    json_daily_units = cJSON_GetObjectItem(json_root, "daily_units");
+    json_daily = cJSON_GetObjectitem(json_root, "daily");
     
-    if (json_timezone && json_timezone->type == cJSON_String)
-    {
-        data->timezone = malloc(strlen(json_timezone->valuestring));
-        strcpy(data->timezone, json_timezone->valuestring);
-    }
+    load_json_weather_current_units(json_current_units);
+    load_json_weather_current(json_current);
+    load_json_weather_hourly_units(json_hourly_units);
+    load_json_weather_hourly(json_hourly);
+    load_json_weather_daily_units(json_daily_units);
+    load_json_weather_daily(json_daily);
 
-    if (json_timezone_abbreviation && json_timezone_abbreviation->type == cJSON_String)
-    {
-        data->timezone_abbreviation = malloc(strlen(json_timezone_abbreviation->valuestring));
-        strcpy(data->timezone_abbreviation, json_timezone_abbreviation->valuestring);
-    }
-
-    if (json_elevation && json_elevation->type == cJSON_Number)
-        data->elevation = json_elevation->valueint;
-    
-    data->current_units = NULL;
-    data->current = NULL;
-    data->hourly_units = NULL;
-    data->hourly = NULL;
-    data->daily_units = NULL;
-    data->daily = NULL;
-
-    cJSON_Delete(json_root);
+    // TODO this is extremely temporary, this memory needs to be freed!
+    // cJSON_Delete(json_root);
 
     return data;
+}
+
+void _set_weather_data_num(double **dest, cJSON *json_src)
+{
+    if (cJSON_IsNumber(json_src))
+        *dest = (double *) &json_src->valuedouble;
+}
+
+void _set_weather_data_str(char **dest, cJSON *json_src)
+{
+    if (cJSON_IsString(json_src))
+        *dest = (char *) json_src->valuestring;
 }
