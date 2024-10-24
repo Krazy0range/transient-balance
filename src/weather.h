@@ -56,7 +56,7 @@ struct _weather_current_units
     char *time;
     char *interval;
     char *temperature_2m;
-    char *relative_humidity;
+    char *relative_humidity_2m;
     char *apparent_temperature;
     char *is_day;
     char *precipitation;
@@ -74,23 +74,23 @@ struct _weather_current_units
 
 struct _weather_current
 {
-    float *time;
-    float *interval;
-    float *temperature_2m;
-    float *relative_humidity_2m;
-    float *apparent_temperature;
-    float *is_day;
-    float *precipitation;
-    float *rain;
-    float *showers;
-    float *snowfall;
-    float *weather_code;
-    float *cloud_cover;
-    float *pressure_msl;
-    float *surface_pressure;
-    float *wind_speed_10m;
-    float *wind_direction_10m;
-    float *wind_gusts_10m;
+    double *time;
+    double *interval;
+    double *temperature_2m;
+    double *relative_humidity_2m;
+    double *apparent_temperature;
+    double *is_day;
+    double *precipitation;
+    double *rain;
+    double *showers;
+    double *snowfall;
+    double *weather_code;
+    double *cloud_cover;
+    double *pressure_msl;
+    double *surface_pressure;
+    double *wind_speed_10m;
+    double *wind_direction_10m;
+    double *wind_gusts_10m;
 };
 
 struct _weather_hourly_units
@@ -141,48 +141,48 @@ struct _weather_hourly_units
 
 struct _weather_hourly
 {
-    float *time;
-    float *temperature_2m;
-    float *relative_humidity_2m;
-    float *dew_point_2m;
-    float *apparent_temperature;
-    float *precipitation_probability;
-    float *precipitation;
-    float *rain;
-    float *showers;
-    float *snowfall;
-    float *snow_depth;
-    float *weather_code;
-    float *pressure_msl;
-    float *surface_pressure;
-    float *cloud_cover;
-    float *cloud_cover_low;
-    float *cloud_cover_mid;
-    float *cloud_cover_high;
-    float *visibilty;
-    float *evapotranspiration;
-    float *et0_fao_evapotranspiration;
-    float *vapour_pressure_deficit;
-    float *wind_speed_10m;
-    float *wind_speed_80m;
-    float *wind_speed_120m;
-    float *wind_speed_180m;
-    float *wind_direction_10m;
-    float *wind_direction_80m;
-    float *wind_direction_120m;
-    float *wind_direction_180m;
-    float *wind_gusts_10m;
-    float *temperature_80m;
-    float *temperature_120m;
-    float *temperature_180m;
-    float *soil_temperature_0cm;
-    float *soil_temperature_6cm;
-    float *soil_temperature_18cm;
-    float *soil_temperature_54cm;
-    float *soil_moisture_0_to_1cm;
-    float *soil_moisture_3_to_9cm;
-    float *soil_moisture_9_to_27cm;
-    float *soil_moisture_27_to_81cm;
+    double *time;
+    double *temperature_2m;
+    double *relative_humidity_2m;
+    double *dew_point_2m;
+    double *apparent_temperature;
+    double *precipitation_probability;
+    double *precipitation;
+    double *rain;
+    double *showers;
+    double *snowfall;
+    double *snow_depth;
+    double *weather_code;
+    double *pressure_msl;
+    double *surface_pressure;
+    double *cloud_cover;
+    double *cloud_cover_low;
+    double *cloud_cover_mid;
+    double *cloud_cover_high;
+    double *visibility;
+    double *evapotranspiration;
+    double *et0_fao_evapotranspiration;
+    double *vapour_pressure_deficit;
+    double *wind_speed_10m;
+    double *wind_speed_80m;
+    double *wind_speed_120m;
+    double *wind_speed_180m;
+    double *wind_direction_10m;
+    double *wind_direction_80m;
+    double *wind_direction_120m;
+    double *wind_direction_180m;
+    double *wind_gusts_10m;
+    double *temperature_80m;
+    double *temperature_120m;
+    double *temperature_180m;
+    double *soil_temperature_0cm;
+    double *soil_temperature_6cm;
+    double *soil_temperature_18cm;
+    double *soil_temperature_54cm;
+    double *soil_moisture_0_to_1cm;
+    double *soil_moisture_3_to_9cm;
+    double *soil_moisture_9_to_27cm;
+    double *soil_moisture_27_to_81cm;
 };
 
 struct _weather_daily_units
@@ -214,29 +214,29 @@ struct _weather_daily_units
 
 struct _weather_daily
 {
-    float *time;
-    float *weather_code;
-    float *temperature_2m_max;
-    float *temperature_2m_min;
-    float *apparent_temperature_max;
-    float *apparent_temperature_min;
-    float *sunrise;
-    float *sunset;
-    float *daylight_duration;
-    float *sunshine_duration;
-    float *uv_index_max;
-    float *uv_index_clear_sky_max;
-    float *precipitation_sum;
-    float *rain_sum;
-    float *showers_sum;
-    float *snowfall_sum;
-    float *precipitation_hours;
-    float *precipitation_probability_max;
-    float *wind_speed_10m_max;
-    float *wind_gusts_10m_max;
-    float *wind_direction_10m_dominant;
-    float *shortwave_radiation_sum;
-    float *et0_fao_evapotranspiration;
+    double *time;
+    double *weather_code;
+    double *temperature_2m_max;
+    double *temperature_2m_min;
+    double *apparent_temperature_max;
+    double *apparent_temperature_min;
+    double *sunrise;
+    double *sunset;
+    double *daylight_duration;
+    double *sunshine_duration;
+    double *uv_index_max;
+    double *uv_index_clear_sky_max;
+    double *precipitation_sum;
+    double *rain_sum;
+    double *showers_sum;
+    double *snowfall_sum;
+    double *precipitation_hours;
+    double *precipitation_probability_max;
+    double *wind_speed_10m_max;
+    double *wind_gusts_10m_max;
+    double *wind_direction_10m_dominant;
+    double *shortwave_radiation_sum;
+    double *et0_fao_evapotranspiration;
 };
 
 #endif

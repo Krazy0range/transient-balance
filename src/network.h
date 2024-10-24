@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #define BUFFER_SIZE 1024
-#define MAX_REQUEST_LEN BUFSIZ
+#define MAX_REQUEST_LEN 2048
 
 #define NETWORK_EXIT_SUCCESS                       0
 #define NETWORK_EXIT_FAILURE                       1
