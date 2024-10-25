@@ -66,6 +66,9 @@ int main(int argc, char *argv[])
 
     if (data->current)
         printf("current->pressure_msl: %lf\n", *data->current->pressure_msl);
+    
+    weather_data *new_data = NULL;
+    create_weather_data(new_data, data);
 
     /* cleanup */
 
