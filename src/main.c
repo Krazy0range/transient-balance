@@ -22,53 +22,59 @@ int main(int argc, char *argv[])
 {
     /* open files */
 
-    // int response_fd = open("response.txt", O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
-    // int body_fd     = open("body.txt",     O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
+    int response_fd = open("response.txt", O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
+    int body_fd     = open("body.txt",     O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
     int err;
     
     /* get api response */
 
-    // err = network_response(WEATHER_API_URL_HOSTNAME, WEATHER_API_URL_PATH_LONGEST, response_fd);
-    // if (err != NETWORK_EXIT_SUCCESS)
-    // {
-    //     printf("network response error occurred\nerror number: %d\n", err);
-    //     close(response_fd);
-    //     close(body_fd);
-    //     return 1;
-    // }
+    err = network_response(WEATHER_API_URL_HOSTNAME, WEATHER_API_URL_PATH_LONG, response_fd);
+    if (err != NETWORK_EXIT_SUCCESS)
+    {
+        printf("network response error occurred\nerror number: %d\n", err);
+        close(response_fd);
+        close(body_fd);
+        return 1;
+    }
 
     /* change out file descriptors for FILE pointers */
     /* kinda stupid, probably rework this sometime lol */
 
-    // close(response_fd);
-    // close(body_fd);
+    close(response_fd);
+    close(body_fd);
 
     FILE *response_file = fopen("response.txt", "r");
     FILE *body_file = fopen("body.txt", "r+");
 
     /* put response body into a separate file */
 
-    // err = response_body(response_file, body_file, 1);
-    // if (err != NETWORK_EXIT_SUCCESS)
-    // {
-    //     printf("response body error occurred\nerror number: %d\n", err);
-    //     close(response_fd);
-    //     close(body_fd);
-    //     return 2;
-    // }
+    err = response_body(response_file, body_file, 1);
+    if (err != NETWORK_EXIT_SUCCESS)
+    {
+        printf("response body error occurred\nerror number: %d\n", err);
+        close(response_fd);
+        close(body_fd);
+        return 2;
+    }
 
     /* load and parse json */
 
     weather_data *data = load_file_weather(body_file);
 
+    fclose(body_file);
+
     printf("latitude: %lf\nlongitude: %lf\nelevation: %lf\n", *data->latitude, *data->longitude, *data->elevation);
     printf("timezone: %s\ntimezone_abbreviation: %s\n", data->timezone, data->timezone_abbreviation);
-
-    if (data->current)
-        printf("current->pressure_msl: %lf\n", *data->current->pressure_msl);
     
     weather_data *new_data = NULL;
-    create_weather_data(new_data, data);
+    create_weather_data(&new_data, data);
+
+    printf("\x1b[31mnext thing\x1b[0m\n");
+
+    printf("%p\n", new_data);
+
+    printf("latitude: %lf\nlongitude: %lf\nelevation: %lf\n", *new_data->latitude, *new_data->longitude, *new_data->elevation);
+    printf("timezone: %s\ntimezone_abbreviation: %s\n", new_data->timezone, new_data->timezone_abbreviation);
 
     /* cleanup */
 

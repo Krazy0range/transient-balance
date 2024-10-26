@@ -18,236 +18,265 @@ void _set_weather_data_str(char **dest, cJSON *json_src)
         *dest = (char *) json_src->valuestring;
 }
 
-void _create_weather_num(double *dest, double *src)
+void _create_weather_num(double **dest, double *src)
 {
-    dest = malloc(sizeof(double));
-    *dest = *src;
+    if (src == NULL)
+        return;
+
+    *dest = malloc(sizeof(double));
+    **dest = *src;
+
+    printf("_create_weather_num:dest:%p:*dest:%lf\n", *dest, **dest);
 }
 
-void _create_weather_str(char *dest, char *src)
+void _create_weather_str(char **dest, char *src)
 {
-    dest = malloc(sizeof(char) * strlen(src));
-    strcpy(dest, src);
+    if (src == NULL)
+        return;
+
+    uint16_t len = strlen(src) + 1;
+    *dest = malloc(sizeof(char) * len);
+    strncpy(*dest, src, len);
+
+    printf("_create_weather_str:dest:%p:*dest:%s\n", *dest, *dest);
 }
 
 /* create weather */
 
-void create_weather_data(weather_data *dest, weather_data *src)
+void create_weather_data(weather_data **dest, weather_data *src)
 {
-    dest = malloc(sizeof(weather_data));
+    *dest = malloc(sizeof(weather_data));
 
-    _create_weather_num(dest->latitude, src->latitude);
-    _create_weather_num(dest->longitude, src->longitude);
-    _create_weather_num(dest->elevation, src->elevation);
-    _create_weather_str(dest->timezone, src->timezone);
-    _create_weather_str(dest->timezone_abbreviation, src->timezone_abbreviation);
+    _create_weather_num(&(*dest)->latitude, src->latitude);
+    _create_weather_num(&(*dest)->longitude, src->longitude);
+    _create_weather_num(&(*dest)->elevation, src->elevation);
+    _create_weather_str(&(*dest)->timezone, src->timezone);
+    _create_weather_str(&(*dest)->timezone_abbreviation, src->timezone_abbreviation);
 
-    create_weather_current_units(dest->current_units, src->current_units);
-    create_weather_current(dest->current, src->current);
-    create_weather_hourly_units(dest->hourly_units, src->hourly_units);
-    create_weather_hourly(dest->hourly, src->hourly);
-    create_weather_daily_units(dest->daily_units, src->daily_units);
-    create_weather_daily(dest->daily, src->daily);
+    create_weather_current_units(&(*dest)->current_units, src->current_units);
+    create_weather_current(&(*dest)->current, src->current);
+    create_weather_hourly_units(&(*dest)->hourly_units, src->hourly_units);
+    create_weather_hourly(&(*dest)->hourly, src->hourly);
+    create_weather_daily_units(&(*dest)->daily_units, src->daily_units);
+    create_weather_daily(&(*dest)->daily, src->daily);
 }
 
-void create_weather_current_units(weather_current_units *dest, weather_current_units *src)
+void create_weather_current_units(weather_current_units **dest, weather_current_units *src)
 {
-    dest = malloc(sizeof(weather_current_units));
+    if (src == NULL)
+        return;
+    
+    *dest = malloc(sizeof(* dest));
 
-    _create_weather_str(dest->time, src->time);
-    _create_weather_str(dest->interval, src->interval);
-    _create_weather_str(dest->temperature_2m, src->temperature_2m);
-    _create_weather_str(dest->relative_humidity_2m, src->relative_humidity_2m);
-    _create_weather_str(dest->apparent_temperature, src->apparent_temperature);
-    _create_weather_str(dest->is_day, src->is_day);
-    _create_weather_str(dest->precipitation, src->precipitation);
-    _create_weather_str(dest->rain, src->rain);
-    _create_weather_str(dest->showers, src->showers);
-    _create_weather_str(dest->snowfall, src->snowfall);
-    _create_weather_str(dest->weather_code, src->weather_code);
-    _create_weather_str(dest->cloud_cover, src->cloud_cover);
-    _create_weather_str(dest->pressure_msl, src->pressure_msl);
-    _create_weather_str(dest->surface_pressure, src->surface_pressure);
-    _create_weather_str(dest->wind_speed_10m, src->wind_speed_10m);
-    _create_weather_str(dest->wind_direction_10m, src->wind_direction_10m);
-    _create_weather_str(dest->wind_gusts_10m, src->wind_gusts_10m);
+    _create_weather_str(&(*dest)->time, src->time);
+    _create_weather_str(&(*dest)->interval, src->interval);
+    _create_weather_str(&(*dest)->temperature_2m, src->temperature_2m);
+    _create_weather_str(&(*dest)->relative_humidity_2m, src->relative_humidity_2m);
+    _create_weather_str(&(*dest)->apparent_temperature, src->apparent_temperature);
+    _create_weather_str(&(*dest)->is_day, src->is_day);
+    _create_weather_str(&(*dest)->precipitation, src->precipitation);
+    _create_weather_str(&(*dest)->rain, src->rain);
+    _create_weather_str(&(*dest)->showers, src->showers);
+    _create_weather_str(&(*dest)->snowfall, src->snowfall);
+    _create_weather_str(&(*dest)->weather_code, src->weather_code);
+    _create_weather_str(&(*dest)->cloud_cover, src->cloud_cover);
+    _create_weather_str(&(*dest)->pressure_msl, src->pressure_msl);
+    _create_weather_str(&(*dest)->surface_pressure, src->surface_pressure);
+    _create_weather_str(&(*dest)->wind_speed_10m, src->wind_speed_10m);
+    _create_weather_str(&(*dest)->wind_direction_10m, src->wind_direction_10m);
+    _create_weather_str(&(*dest)->wind_gusts_10m, src->wind_gusts_10m);
 }
 
-void create_weather_current(weather_current *dest, weather_current *src)
+void create_weather_current(weather_current **dest, weather_current *src)
 {
-    dest = malloc(sizeof(weather_current));
+    if (src == NULL)
+        return;
 
-    _create_weather_num(dest->time, src->time);
-    _create_weather_num(dest->interval, src->interval);
-    _create_weather_num(dest->temperature_2m, src->temperature_2m);
-    _create_weather_num(dest->relative_humidity_2m, src->relative_humidity_2m);
-    _create_weather_num(dest->apparent_temperature, src->apparent_temperature);
-    _create_weather_num(dest->is_day, src->is_day);
-    _create_weather_num(dest->precipitation, src->precipitation);
-    _create_weather_num(dest->rain, src->rain);
-    _create_weather_num(dest->showers, src->showers);
-    _create_weather_num(dest->snowfall, src->snowfall);
-    _create_weather_num(dest->weather_code, src->weather_code);
-    _create_weather_num(dest->cloud_cover, src->cloud_cover);
-    _create_weather_num(dest->pressure_msl, src->pressure_msl);
-    _create_weather_num(dest->surface_pressure, src->surface_pressure);
-    _create_weather_num(dest->wind_speed_10m, src->wind_speed_10m);
-    _create_weather_num(dest->wind_direction_10m, src->wind_direction_10m);
-    _create_weather_num(dest->wind_gusts_10m, src->wind_gusts_10m);
+    *dest = malloc(sizeof(weather_current));
+
+    _create_weather_num(&(*dest)->time, src->time);
+    _create_weather_num(&(*dest)->interval, src->interval);
+    _create_weather_num(&(*dest)->temperature_2m, src->temperature_2m);
+    _create_weather_num(&(*dest)->relative_humidity_2m, src->relative_humidity_2m);
+    _create_weather_num(&(*dest)->apparent_temperature, src->apparent_temperature);
+    _create_weather_num(&(*dest)->is_day, src->is_day);
+    _create_weather_num(&(*dest)->precipitation, src->precipitation);
+    _create_weather_num(&(*dest)->rain, src->rain);
+    _create_weather_num(&(*dest)->showers, src->showers);
+    _create_weather_num(&(*dest)->snowfall, src->snowfall);
+    _create_weather_num(&(*dest)->weather_code, src->weather_code);
+    _create_weather_num(&(*dest)->cloud_cover, src->cloud_cover);
+    _create_weather_num(&(*dest)->pressure_msl, src->pressure_msl);
+    _create_weather_num(&(*dest)->surface_pressure, src->surface_pressure);
+    _create_weather_num(&(*dest)->wind_speed_10m, src->wind_speed_10m);
+    _create_weather_num(&(*dest)->wind_direction_10m, src->wind_direction_10m);
+    _create_weather_num(&(*dest)->wind_gusts_10m, src->wind_gusts_10m);
 }
 
-void create_weather_hourly_units(weather_hourly_units *dest, weather_hourly_units *src)
+void create_weather_hourly_units(weather_hourly_units **dest, weather_hourly_units *src)
 {
-    dest = malloc(sizeof(weather_hourly_units));
+    if (src == NULL)
+        return;
+        
+    *dest = malloc(sizeof(weather_hourly_units));
 
-    _create_weather_str(dest->time, src->time);
-    _create_weather_str(dest->temperature_2m, src->temperature_2m);
-    _create_weather_str(dest->relative_humidity_2m, src->relative_humidity_2m);
-    _create_weather_str(dest->dew_point_2m, src->dew_point_2m);
-    _create_weather_str(dest->apparent_temperature, src->apparent_temperature);
-    _create_weather_str(dest->precipitation_probability, src->precipitation_probability);
-    _create_weather_str(dest->precipitation, src->precipitation);
-    _create_weather_str(dest->rain, src->rain);
-    _create_weather_str(dest->showers, src->showers);
-    _create_weather_str(dest->snowfall, src->snowfall);
-    _create_weather_str(dest->snow_depth, src->snow_depth);
-    _create_weather_str(dest->weather_code, src->weather_code);
-    _create_weather_str(dest->pressure_msl, src->pressure_msl);
-    _create_weather_str(dest->surface_pressure, src->surface_pressure);
-    _create_weather_str(dest->cloud_cover, src->cloud_cover);
-    _create_weather_str(dest->cloud_cover_low, src->cloud_cover_low);
-    _create_weather_str(dest->cloud_cover_mid, src->cloud_cover_mid);
-    _create_weather_str(dest->cloud_cover_high, src->cloud_cover_high);
-    _create_weather_str(dest->visibility, src->visibility);
-    _create_weather_str(dest->evapotranspiration, src->evapotranspiration);
-    _create_weather_str(dest->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
-    _create_weather_str(dest->vapour_pressure_deficit, src->vapour_pressure_deficit);
-    _create_weather_str(dest->wind_speed_10m, src->wind_speed_10m);
-    _create_weather_str(dest->wind_speed_80m, src->wind_speed_80m);
-    _create_weather_str(dest->wind_speed_120m, src->wind_speed_120m);
-    _create_weather_str(dest->wind_speed_180m, src->wind_speed_180m);
-    _create_weather_str(dest->wind_direction_10m, src->wind_direction_10m);
-    _create_weather_str(dest->wind_direction_80m, src->wind_direction_80m);
-    _create_weather_str(dest->wind_direction_120m, src->wind_direction_120m);
-    _create_weather_str(dest->wind_direction_180m, src->wind_direction_180m);
-    _create_weather_str(dest->wind_gusts_10m, src->wind_gusts_10m);
-    _create_weather_str(dest->temperature_80m, src->temperature_80m);
-    _create_weather_str(dest->temperature_120m, src->temperature_120m);
-    _create_weather_str(dest->temperature_180m, src->temperature_180m);
-    _create_weather_str(dest->soil_temperature_0cm, src->soil_temperature_0cm);
-    _create_weather_str(dest->soil_temperature_6cm, src->soil_temperature_6cm);
-    _create_weather_str(dest->soil_temperature_18cm, src->soil_temperature_18cm);
-    _create_weather_str(dest->soil_temperature_54cm, src->soil_temperature_54cm);
-    _create_weather_str(dest->soil_moisture_0_to_1cm, src->soil_moisture_0_to_1cm);
-    _create_weather_str(dest->soil_moisture_3_to_9cm, src->soil_moisture_3_to_9cm);
-    _create_weather_str(dest->soil_moisture_9_to_27cm, src->soil_moisture_9_to_27cm);
-    _create_weather_str(dest->soil_moisture_27_to_81cm, src->soil_moisture_27_to_81cm);
+    _create_weather_str(&(*dest)->time, src->time);
+    _create_weather_str(&(*dest)->temperature_2m, src->temperature_2m);
+    _create_weather_str(&(*dest)->relative_humidity_2m, src->relative_humidity_2m);
+    _create_weather_str(&(*dest)->dew_point_2m, src->dew_point_2m);
+    _create_weather_str(&(*dest)->apparent_temperature, src->apparent_temperature);
+    _create_weather_str(&(*dest)->precipitation_probability, src->precipitation_probability);
+    _create_weather_str(&(*dest)->precipitation, src->precipitation);
+    _create_weather_str(&(*dest)->rain, src->rain);
+    _create_weather_str(&(*dest)->showers, src->showers);
+    _create_weather_str(&(*dest)->snowfall, src->snowfall);
+    _create_weather_str(&(*dest)->snow_depth, src->snow_depth);
+    _create_weather_str(&(*dest)->weather_code, src->weather_code);
+    _create_weather_str(&(*dest)->pressure_msl, src->pressure_msl);
+    _create_weather_str(&(*dest)->surface_pressure, src->surface_pressure);
+    _create_weather_str(&(*dest)->cloud_cover, src->cloud_cover);
+    _create_weather_str(&(*dest)->cloud_cover_low, src->cloud_cover_low);
+    _create_weather_str(&(*dest)->cloud_cover_mid, src->cloud_cover_mid);
+    _create_weather_str(&(*dest)->cloud_cover_high, src->cloud_cover_high);
+    _create_weather_str(&(*dest)->visibility, src->visibility);
+    _create_weather_str(&(*dest)->evapotranspiration, src->evapotranspiration);
+    _create_weather_str(&(*dest)->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
+    _create_weather_str(&(*dest)->vapour_pressure_deficit, src->vapour_pressure_deficit);
+    _create_weather_str(&(*dest)->wind_speed_10m, src->wind_speed_10m);
+    _create_weather_str(&(*dest)->wind_speed_80m, src->wind_speed_80m);
+    _create_weather_str(&(*dest)->wind_speed_120m, src->wind_speed_120m);
+    _create_weather_str(&(*dest)->wind_speed_180m, src->wind_speed_180m);
+    _create_weather_str(&(*dest)->wind_direction_10m, src->wind_direction_10m);
+    _create_weather_str(&(*dest)->wind_direction_80m, src->wind_direction_80m);
+    _create_weather_str(&(*dest)->wind_direction_120m, src->wind_direction_120m);
+    _create_weather_str(&(*dest)->wind_direction_180m, src->wind_direction_180m);
+    _create_weather_str(&(*dest)->wind_gusts_10m, src->wind_gusts_10m);
+    _create_weather_str(&(*dest)->temperature_80m, src->temperature_80m);
+    _create_weather_str(&(*dest)->temperature_120m, src->temperature_120m);
+    _create_weather_str(&(*dest)->temperature_180m, src->temperature_180m);
+    _create_weather_str(&(*dest)->soil_temperature_0cm, src->soil_temperature_0cm);
+    _create_weather_str(&(*dest)->soil_temperature_6cm, src->soil_temperature_6cm);
+    _create_weather_str(&(*dest)->soil_temperature_18cm, src->soil_temperature_18cm);
+    _create_weather_str(&(*dest)->soil_temperature_54cm, src->soil_temperature_54cm);
+    _create_weather_str(&(*dest)->soil_moisture_0_to_1cm, src->soil_moisture_0_to_1cm);
+    _create_weather_str(&(*dest)->soil_moisture_3_to_9cm, src->soil_moisture_3_to_9cm);
+    _create_weather_str(&(*dest)->soil_moisture_9_to_27cm, src->soil_moisture_9_to_27cm);
+    _create_weather_str(&(*dest)->soil_moisture_27_to_81cm, src->soil_moisture_27_to_81cm);
 }
 
-void create_weather_hourly(weather_hourly *dest, weather_hourly *src)
+void create_weather_hourly(weather_hourly **dest, weather_hourly *src)
 {
-    dest = malloc(sizeof(weather_hourly_units));
+    if (src == NULL)
+        return;
+        
+    *dest = malloc(sizeof(weather_hourly_units));
 
-    _create_weather_num(dest->time, src->time);
-    _create_weather_num(dest->temperature_2m, src->temperature_2m);
-    _create_weather_num(dest->relative_humidity_2m, src->relative_humidity_2m);
-    _create_weather_num(dest->dew_point_2m, src->dew_point_2m);
-    _create_weather_num(dest->apparent_temperature, src->apparent_temperature);
-    _create_weather_num(dest->precipitation_probability, src->precipitation_probability);
-    _create_weather_num(dest->precipitation, src->precipitation);
-    _create_weather_num(dest->rain, src->rain);
-    _create_weather_num(dest->showers, src->showers);
-    _create_weather_num(dest->snowfall, src->snowfall);
-    _create_weather_num(dest->snow_depth, src->snow_depth);
-    _create_weather_num(dest->weather_code, src->weather_code);
-    _create_weather_num(dest->pressure_msl, src->pressure_msl);
-    _create_weather_num(dest->surface_pressure, src->surface_pressure);
-    _create_weather_num(dest->cloud_cover, src->cloud_cover);
-    _create_weather_num(dest->cloud_cover_low, src->cloud_cover_low);
-    _create_weather_num(dest->cloud_cover_mid, src->cloud_cover_mid);
-    _create_weather_num(dest->cloud_cover_high, src->cloud_cover_high);
-    _create_weather_num(dest->visibility, src->visibility);
-    _create_weather_num(dest->evapotranspiration, src->evapotranspiration);
-    _create_weather_num(dest->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
-    _create_weather_num(dest->vapour_pressure_deficit, src->vapour_pressure_deficit);
-    _create_weather_num(dest->wind_speed_10m, src->wind_speed_10m);
-    _create_weather_num(dest->wind_speed_80m, src->wind_speed_80m);
-    _create_weather_num(dest->wind_speed_120m, src->wind_speed_120m);
-    _create_weather_num(dest->wind_speed_180m, src->wind_speed_180m);
-    _create_weather_num(dest->wind_direction_10m, src->wind_direction_10m);
-    _create_weather_num(dest->wind_direction_80m, src->wind_direction_80m);
-    _create_weather_num(dest->wind_direction_120m, src->wind_direction_120m);
-    _create_weather_num(dest->wind_direction_180m, src->wind_direction_180m);
-    _create_weather_num(dest->wind_gusts_10m, src->wind_gusts_10m);
-    _create_weather_num(dest->temperature_80m, src->temperature_80m);
-    _create_weather_num(dest->temperature_120m, src->temperature_120m);
-    _create_weather_num(dest->temperature_180m, src->temperature_180m);
-    _create_weather_num(dest->soil_temperature_0cm, src->soil_temperature_0cm);
-    _create_weather_num(dest->soil_temperature_6cm, src->soil_temperature_6cm);
-    _create_weather_num(dest->soil_temperature_18cm, src->soil_temperature_18cm);
-    _create_weather_num(dest->soil_temperature_54cm, src->soil_temperature_54cm);
-    _create_weather_num(dest->soil_moisture_0_to_1cm, src->soil_moisture_0_to_1cm);
-    _create_weather_num(dest->soil_moisture_3_to_9cm, src->soil_moisture_3_to_9cm);
-    _create_weather_num(dest->soil_moisture_9_to_27cm, src->soil_moisture_9_to_27cm);
-    _create_weather_num(dest->soil_moisture_27_to_81cm, src->soil_moisture_27_to_81cm);
+    _create_weather_num(&(*dest)->time, src->time);
+    _create_weather_num(&(*dest)->temperature_2m, src->temperature_2m);
+    _create_weather_num(&(*dest)->relative_humidity_2m, src->relative_humidity_2m);
+    _create_weather_num(&(*dest)->dew_point_2m, src->dew_point_2m);
+    _create_weather_num(&(*dest)->apparent_temperature, src->apparent_temperature);
+    _create_weather_num(&(*dest)->precipitation_probability, src->precipitation_probability);
+    _create_weather_num(&(*dest)->precipitation, src->precipitation);
+    _create_weather_num(&(*dest)->rain, src->rain);
+    _create_weather_num(&(*dest)->showers, src->showers);
+    _create_weather_num(&(*dest)->snowfall, src->snowfall);
+    _create_weather_num(&(*dest)->snow_depth, src->snow_depth);
+    _create_weather_num(&(*dest)->weather_code, src->weather_code);
+    _create_weather_num(&(*dest)->pressure_msl, src->pressure_msl);
+    _create_weather_num(&(*dest)->surface_pressure, src->surface_pressure);
+    _create_weather_num(&(*dest)->cloud_cover, src->cloud_cover);
+    _create_weather_num(&(*dest)->cloud_cover_low, src->cloud_cover_low);
+    _create_weather_num(&(*dest)->cloud_cover_mid, src->cloud_cover_mid);
+    _create_weather_num(&(*dest)->cloud_cover_high, src->cloud_cover_high);
+    _create_weather_num(&(*dest)->visibility, src->visibility);
+    _create_weather_num(&(*dest)->evapotranspiration, src->evapotranspiration);
+    _create_weather_num(&(*dest)->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
+    _create_weather_num(&(*dest)->vapour_pressure_deficit, src->vapour_pressure_deficit);
+    _create_weather_num(&(*dest)->wind_speed_10m, src->wind_speed_10m);
+    _create_weather_num(&(*dest)->wind_speed_80m, src->wind_speed_80m);
+    _create_weather_num(&(*dest)->wind_speed_120m, src->wind_speed_120m);
+    _create_weather_num(&(*dest)->wind_speed_180m, src->wind_speed_180m);
+    _create_weather_num(&(*dest)->wind_direction_10m, src->wind_direction_10m);
+    _create_weather_num(&(*dest)->wind_direction_80m, src->wind_direction_80m);
+    _create_weather_num(&(*dest)->wind_direction_120m, src->wind_direction_120m);
+    _create_weather_num(&(*dest)->wind_direction_180m, src->wind_direction_180m);
+    _create_weather_num(&(*dest)->wind_gusts_10m, src->wind_gusts_10m);
+    _create_weather_num(&(*dest)->temperature_80m, src->temperature_80m);
+    _create_weather_num(&(*dest)->temperature_120m, src->temperature_120m);
+    _create_weather_num(&(*dest)->temperature_180m, src->temperature_180m);
+    _create_weather_num(&(*dest)->soil_temperature_0cm, src->soil_temperature_0cm);
+    _create_weather_num(&(*dest)->soil_temperature_6cm, src->soil_temperature_6cm);
+    _create_weather_num(&(*dest)->soil_temperature_18cm, src->soil_temperature_18cm);
+    _create_weather_num(&(*dest)->soil_temperature_54cm, src->soil_temperature_54cm);
+    _create_weather_num(&(*dest)->soil_moisture_0_to_1cm, src->soil_moisture_0_to_1cm);
+    _create_weather_num(&(*dest)->soil_moisture_3_to_9cm, src->soil_moisture_3_to_9cm);
+    _create_weather_num(&(*dest)->soil_moisture_9_to_27cm, src->soil_moisture_9_to_27cm);
+    _create_weather_num(&(*dest)->soil_moisture_27_to_81cm, src->soil_moisture_27_to_81cm);
 }
 
-void create_weather_daily_units(weather_daily_units *dest, weather_daily_units *src)
+void create_weather_daily_units(weather_daily_units **dest, weather_daily_units *src)
 {
-    dest = malloc(sizeof(weather_daily_units));
+    if (src == NULL)
+        return;
+        
+    *dest = malloc(sizeof(weather_daily_units));
 
-    _create_weather_str(dest->time, src->time);
-    _create_weather_str(dest->weather_code, src->weather_code);
-    _create_weather_str(dest->temperature_2m_max, src->temperature_2m_max);
-    _create_weather_str(dest->temperature_2m_min, src->temperature_2m_min);
-    _create_weather_str(dest->apparent_temperature_max, src->apparent_temperature_max);
-    _create_weather_str(dest->apparent_temperature_min, src->apparent_temperature_min);
-    _create_weather_str(dest->sunrise, src->sunrise);
-    _create_weather_str(dest->sunset, src->sunset);
-    _create_weather_str(dest->daylight_duration, src->daylight_duration);
-    _create_weather_str(dest->sunshine_duration, src->sunshine_duration);
-    _create_weather_str(dest->uv_index_max, src->uv_index_max);
-    _create_weather_str(dest->uv_index_clear_sky_max, src->uv_index_clear_sky_max);
-    _create_weather_str(dest->precipitation_sum, src->precipitation_sum);
-    _create_weather_str(dest->rain_sum, src->rain_sum);
-    _create_weather_str(dest->showers_sum, src->showers_sum);
-    _create_weather_str(dest->snowfall_sum, src->snowfall_sum);
-    _create_weather_str(dest->precipitation_hours, src->precipitation_hours);
-    _create_weather_str(dest->precipitation_probability_max, src->precipitation_probability_max);
-    _create_weather_str(dest->wind_speed_10m_max, src->wind_speed_10m_max);
-    _create_weather_str(dest->wind_gusts_10m_max, src->wind_gusts_10m_max);
-    _create_weather_str(dest->wind_direction_10m_dominant, src->wind_direction_10m_dominant);
-    _create_weather_str(dest->shortwave_radiation_sum, src->shortwave_radiation_sum);
-    _create_weather_str(dest->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
+    _create_weather_str(&(*dest)->time, src->time);
+    _create_weather_str(&(*dest)->weather_code, src->weather_code);
+    _create_weather_str(&(*dest)->temperature_2m_max, src->temperature_2m_max);
+    _create_weather_str(&(*dest)->temperature_2m_min, src->temperature_2m_min);
+    _create_weather_str(&(*dest)->apparent_temperature_max, src->apparent_temperature_max);
+    _create_weather_str(&(*dest)->apparent_temperature_min, src->apparent_temperature_min);
+    _create_weather_str(&(*dest)->sunrise, src->sunrise);
+    _create_weather_str(&(*dest)->sunset, src->sunset);
+    _create_weather_str(&(*dest)->daylight_duration, src->daylight_duration);
+    _create_weather_str(&(*dest)->sunshine_duration, src->sunshine_duration);
+    _create_weather_str(&(*dest)->uv_index_max, src->uv_index_max);
+    _create_weather_str(&(*dest)->uv_index_clear_sky_max, src->uv_index_clear_sky_max);
+    _create_weather_str(&(*dest)->precipitation_sum, src->precipitation_sum);
+    _create_weather_str(&(*dest)->rain_sum, src->rain_sum);
+    _create_weather_str(&(*dest)->showers_sum, src->showers_sum);
+    _create_weather_str(&(*dest)->snowfall_sum, src->snowfall_sum);
+    _create_weather_str(&(*dest)->precipitation_hours, src->precipitation_hours);
+    _create_weather_str(&(*dest)->precipitation_probability_max, src->precipitation_probability_max);
+    _create_weather_str(&(*dest)->wind_speed_10m_max, src->wind_speed_10m_max);
+    _create_weather_str(&(*dest)->wind_gusts_10m_max, src->wind_gusts_10m_max);
+    _create_weather_str(&(*dest)->wind_direction_10m_dominant, src->wind_direction_10m_dominant);
+    _create_weather_str(&(*dest)->shortwave_radiation_sum, src->shortwave_radiation_sum);
+    _create_weather_str(&(*dest)->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
 }
 
-void create_weather_daily(weather_daily *dest, weather_daily *src)
+void create_weather_daily(weather_daily **dest, weather_daily *src)
 {
-    dest = malloc(sizeof(weather_daily));
+    if (src == NULL)
+        return;
+        
+    *dest = malloc(sizeof(weather_daily));
 
-    _create_weather_num(dest->time, src->time);
-    _create_weather_num(dest->weather_code, src->weather_code);
-    _create_weather_num(dest->temperature_2m_max, src->temperature_2m_max);
-    _create_weather_num(dest->temperature_2m_min, src->temperature_2m_min);
-    _create_weather_num(dest->apparent_temperature_max, src->apparent_temperature_max);
-    _create_weather_num(dest->apparent_temperature_min, src->apparent_temperature_min);
-    _create_weather_num(dest->sunrise, src->sunrise);
-    _create_weather_num(dest->sunset, src->sunset);
-    _create_weather_num(dest->daylight_duration, src->daylight_duration);
-    _create_weather_num(dest->sunshine_duration, src->sunshine_duration);
-    _create_weather_num(dest->uv_index_max, src->uv_index_max);
-    _create_weather_num(dest->uv_index_clear_sky_max, src->uv_index_clear_sky_max);
-    _create_weather_num(dest->precipitation_sum, src->precipitation_sum);
-    _create_weather_num(dest->rain_sum, src->rain_sum);
-    _create_weather_num(dest->showers_sum, src->showers_sum);
-    _create_weather_num(dest->snowfall_sum, src->snowfall_sum);
-    _create_weather_num(dest->precipitation_hours, src->precipitation_hours);
-    _create_weather_num(dest->precipitation_probability_max, src->precipitation_probability_max);
-    _create_weather_num(dest->wind_speed_10m_max, src->wind_speed_10m_max);
-    _create_weather_num(dest->wind_gusts_10m_max, src->wind_gusts_10m_max);
-    _create_weather_num(dest->wind_direction_10m_dominant, src->wind_direction_10m_dominant);
-    _create_weather_num(dest->shortwave_radiation_sum, src->shortwave_radiation_sum);
-    _create_weather_num(dest->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
+    _create_weather_num(&(*dest)->time, src->time);
+    _create_weather_num(&(*dest)->weather_code, src->weather_code);
+    _create_weather_num(&(*dest)->temperature_2m_max, src->temperature_2m_max);
+    _create_weather_num(&(*dest)->temperature_2m_min, src->temperature_2m_min);
+    _create_weather_num(&(*dest)->apparent_temperature_max, src->apparent_temperature_max);
+    _create_weather_num(&(*dest)->apparent_temperature_min, src->apparent_temperature_min);
+    _create_weather_num(&(*dest)->sunrise, src->sunrise);
+    _create_weather_num(&(*dest)->sunset, src->sunset);
+    _create_weather_num(&(*dest)->daylight_duration, src->daylight_duration);
+    _create_weather_num(&(*dest)->sunshine_duration, src->sunshine_duration);
+    _create_weather_num(&(*dest)->uv_index_max, src->uv_index_max);
+    _create_weather_num(&(*dest)->uv_index_clear_sky_max, src->uv_index_clear_sky_max);
+    _create_weather_num(&(*dest)->precipitation_sum, src->precipitation_sum);
+    _create_weather_num(&(*dest)->rain_sum, src->rain_sum);
+    _create_weather_num(&(*dest)->showers_sum, src->showers_sum);
+    _create_weather_num(&(*dest)->snowfall_sum, src->snowfall_sum);
+    _create_weather_num(&(*dest)->precipitation_hours, src->precipitation_hours);
+    _create_weather_num(&(*dest)->precipitation_probability_max, src->precipitation_probability_max);
+    _create_weather_num(&(*dest)->wind_speed_10m_max, src->wind_speed_10m_max);
+    _create_weather_num(&(*dest)->wind_gusts_10m_max, src->wind_gusts_10m_max);
+    _create_weather_num(&(*dest)->wind_direction_10m_dominant, src->wind_direction_10m_dominant);
+    _create_weather_num(&(*dest)->shortwave_radiation_sum, src->shortwave_radiation_sum);
+    _create_weather_num(&(*dest)->et0_fao_evapotranspiration, src->et0_fao_evapotranspiration);
 }
 
 /* load weather */
@@ -257,7 +286,7 @@ weather_data *load_file_weather(FILE *json_file)
     cJSON *json_root;
 
     char *json_raw = file_to_string(json_file);
-    json_root = cJSON_Parse(json_raw);
+    json_root = cJSON_ParseWithLength(json_raw, strlen(json_raw));
     free(json_raw);
 
     return load_json_weather_data(json_root);

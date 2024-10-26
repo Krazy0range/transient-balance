@@ -15,13 +15,13 @@ typedef struct _weather_daily         weather_daily;
 
 /* actually allocates and copies memory */
 
-void create_weather_data(weather_data *dest, weather_data *src);
-void create_weather_current_units(weather_current_units *dest, weather_current_units *src);
-void create_weather_current(weather_current *dest, weather_current *src);
-void create_weather_hourly_units(weather_hourly_units *dest, weather_hourly_units *src);
-void create_weather_hourly(weather_hourly *dest, weather_hourly *src);
-void create_weather_daily_units(weather_daily_units *dest, weather_daily_units *src);
-void create_weather_daily(weather_daily *dest, weather_daily *src);
+void create_weather_data(weather_data **dest, weather_data *src);
+void create_weather_current_units(weather_current_units **dest, weather_current_units *src);
+void create_weather_current(weather_current **dest, weather_current *src);
+void create_weather_hourly_units(weather_hourly_units **dest, weather_hourly_units *src);
+void create_weather_hourly(weather_hourly **dest, weather_hourly *src);
+void create_weather_daily_units(weather_daily_units **dest, weather_daily_units *src);
+void create_weather_daily(weather_daily **dest, weather_daily *src);
 
 /* all this simply points to json bytes, doesn't copy anything! */
 
@@ -38,8 +38,8 @@ weather_daily *load_json_weather_daily(cJSON *json_root);
 
 void _set_weather_data_num(double **dest, cJSON *json_src);
 void _set_weather_data_str(char **dest, cJSON *json_src);
-void _create_weather_num(double *dest, double *src);
-void _create_weather_str(char *dest, char *src);
+void _create_weather_num(double **dest, double *src);
+void _create_weather_str(char **dest, char *src);
 
 /* 
  * weather information structs designed

@@ -12,7 +12,8 @@ char *file_to_string(FILE *file)
     fseek(file, 0, SEEK_SET);
 
     buffer = malloc(length);
-    fread (buffer, 1, length, file);
+    fread(buffer, 1, length-1, file);
+    buffer[length - 1] = '\0';
     
     return buffer;
 }

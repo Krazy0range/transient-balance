@@ -1,4 +1,4 @@
-.PHONY: compile wget
+.PHONY: compile debug wget
 
 IFLAGS := -I src/ -I include/
 LFLAGS := -L lib/ -lcjson -rpath lib
