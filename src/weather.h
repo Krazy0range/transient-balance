@@ -25,7 +25,7 @@ void create_weather_daily(weather_daily **dest, weather_daily *src);
 
 /* all this simply points to json bytes, doesn't copy anything! */
 
-weather_data *load_file_weather(FILE *json_file);
+weather_data *load_file_weather(FILE *json_file, cJSON *json_root);
 weather_data *load_json_weather_data(cJSON *json_root);
 weather_current_units *load_json_weather_current_units(cJSON *json_root);
 weather_current *load_json_weather_current(cJSON *json_root);
@@ -33,6 +33,16 @@ weather_hourly_units *load_json_weather_hourly_units(cJSON *json_root);
 weather_hourly *load_json_weather_hourly(cJSON *json_root);
 weather_daily_units *load_json_weather_daily_units(cJSON *json_root);
 weather_daily *load_json_weather_daily(cJSON *json_root);
+
+/* destroy allocated and copied weather data, don't use on `load`ed data! */
+
+void destroy_weather_data(weather_data *data);
+void destroy_weather_current_units(weather_current_units *data);
+void destroy_weather_current(weather_current *data);
+void destroy_weather_hourly_units(weather_hourly_units *data);
+void destroy_weather_hourly(weather_hourly *data);
+void destroy_weather_daily_units(weather_daily_units *data);
+void destroy_weather_daily(weather_daily *data);
 
 /* helpers */
 

@@ -57,30 +57,20 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    /* load and parse json */
+    /* load weather data */
 
-    weather_data *data = load_file_weather(body_file);
+    cJSON *json_root = NULL;
 
-    fclose(body_file);
+    weather_data *_data = load_file_weather(body_file, json_root);
 
-    printf("latitude: %lf\nlongitude: %lf\nelevation: %lf\n", *data->latitude, *data->longitude, *data->elevation);
-    printf("timezone: %s\ntimezone_abbreviation: %s\n", data->timezone, data->timezone_abbreviation);
-    
-    weather_data *new_data = NULL;
-    create_weather_data(&new_data, data);
+    weather_data *data = NULL;
+    create_weather_data(&data, _data);
 
-    printf("\x1b[31mnext thing\x1b[0m\n");
-
-    printf("%p\n", new_data);
-
-    printf("latitude: %lf\nlongitude: %lf\nelevation: %lf\n", *new_data->latitude, *new_data->longitude, *new_data->elevation);
-    printf("timezone: %s\ntimezone_abbreviation: %s\n", new_data->timezone, new_data->timezone_abbreviation);
+    cJSON_Delete(json_root);
 
     /* cleanup */
 
-    // TODO replace with free_weather_data function
-    free(data->timezone);
-    free(data->timezone_abbreviation);
+    free_weather_data(data);
 
     fclose(response_file);
     fclose(body_file);

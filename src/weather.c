@@ -25,8 +25,6 @@ void _create_weather_num(double **dest, double *src)
 
     *dest = malloc(sizeof(double));
     **dest = *src;
-
-    printf("_create_weather_num:dest:%p:*dest:%lf\n", *dest, **dest);
 }
 
 void _create_weather_str(char **dest, char *src)
@@ -37,8 +35,6 @@ void _create_weather_str(char **dest, char *src)
     uint16_t len = strlen(src) + 1;
     *dest = malloc(sizeof(char) * len);
     strncpy(*dest, src, len);
-
-    printf("_create_weather_str:dest:%p:*dest:%s\n", *dest, *dest);
 }
 
 /* create weather */
@@ -281,10 +277,8 @@ void create_weather_daily(weather_daily **dest, weather_daily *src)
 
 /* load weather */
 
-weather_data *load_file_weather(FILE *json_file)
+weather_data *load_file_weather(FILE *json_file, cJSON *json_root)
 {
-    cJSON *json_root;
-
     char *json_raw = file_to_string(json_file);
     json_root = cJSON_ParseWithLength(json_raw, strlen(json_raw));
     free(json_raw);
@@ -355,8 +349,6 @@ weather_data *load_json_weather_data(cJSON *json_root)
     json_hourly = cJSON_GetObjectItem(json_root, "hourly");
     json_daily_units = cJSON_GetObjectItem(json_root, "daily_units");
     json_daily = cJSON_GetObjectItem(json_root, "daily");
-
-    printf("%p\n%p\n%p\n%p\n%p\n%p\n", (void *)json_current_units, (void *)json_current, (void *)json_hourly_units, (void *)json_hourly, (void *)json_daily_units, (void *) json_daily);
     
     data->current_units = load_json_weather_current_units(json_current_units);
     data->current = load_json_weather_current(json_current);
@@ -1173,3 +1165,30 @@ weather_daily *load_json_weather_daily(cJSON *json_root)
 
     return data;
 }
+
+/* destroy weather stuff */
+
+void destroy_weather_data(weather_data *data)
+{
+    free(data->latitude);
+    free(data->longitude);
+    free(data->elevation);
+    free(data->timezone);
+    free(data->timezone_abbreviation);
+
+    destroy_weather_current_units(data->current_units);
+    destroy_weather_current(data->current);
+    destroy_weather_hourly_units(data->hourly_units);
+    destroy_weather_hourly(data->hourly);
+    destroy_weather_daily_units(data->daily_units);
+    destroy_weather_daily(data->daily);
+
+    free(data->current_units);
+    free(data->current);
+    free(data->hourly_units);
+    free(data->hourly);
+    free(data->daily_units);
+    free(data->daily);
+}
+
+// TODO implement functions
