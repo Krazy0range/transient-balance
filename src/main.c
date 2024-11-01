@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
     /* cleanup */
 
-    free_weather_data(data);
+    destroy_weather_data(data);
 
     fclose(response_file);
     fclose(body_file);

@@ -1,6 +1,8 @@
 #ifndef WEATHER_H
 #define WEATHER_H
 
+#define _DEBUG
+
 #include "cJSON/cJSON.h"
 
 typedef struct _weather_data          weather_data;
@@ -46,10 +48,12 @@ void destroy_weather_daily(weather_daily *data);
 
 /* helpers */
 
-void _set_weather_data_num(double **dest, cJSON *json_src);
-void _set_weather_data_str(char **dest, cJSON *json_src);
+void _load_weather_data_num(double **dest, cJSON *json_src);
+void _load_weather_data_str(char **dest, cJSON *json_src);
 void _create_weather_num(double **dest, double *src);
 void _create_weather_str(char **dest, char *src);
+void _destroy_weather_num(double *dest);
+void _destroy_weather_str(char *dest);
 
 /* 
  * weather information structs designed

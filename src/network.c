@@ -115,7 +115,10 @@ int network_response(char *hostname, char *path, int response_fd)
         // buffer[BUFFER_SIZE-3] = '\x96';
         // buffer[BUFFER_SIZE-2] = '\x88';
         // buffer[BUFFER_SIZE-1] = '\0';
-        // fprintf(stderr, "debug: after read %d\tbytes read %zd\n", i++, nbytes_total);
+
+#ifdef _DEBUG
+        fprintf(stderr, "network_response:read:%d:%zdb\n", i++, nbytes_total);
+#endif
         // fprintf(response, "%s", buffer);
         // buffer[0] = '\0';
         write(response_fd, buffer, nbytes_total);

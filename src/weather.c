@@ -6,16 +6,32 @@
 
 /* helpers */
 
-void _set_weather_data_num(double **dest, cJSON *json_src)
+void _load_weather_data_num(double **dest, cJSON *json_src)
 {
     if (cJSON_IsNumber(json_src))
         *dest = (double *) &json_src->valuedouble;
+    
+    if (*dest == NULL)
+        return;
+    
+#ifdef _DEBUG
+    fprintf(stderr, "_load_weather_data_num:%p\n", *dest);
+#endif
+
 }
 
-void _set_weather_data_str(char **dest, cJSON *json_src)
+void _load_weather_data_str(char **dest, cJSON *json_src)
 {
     if (cJSON_IsString(json_src))
         *dest = (char *) json_src->valuestring;
+    
+    if (*dest == NULL)
+        return;
+    
+#ifdef _DEBUG
+    fprintf(stderr, "_load_weather_data_str:%p\n", *dest);
+#endif
+
 }
 
 void _create_weather_num(double **dest, double *src)
@@ -25,6 +41,11 @@ void _create_weather_num(double **dest, double *src)
 
     *dest = malloc(sizeof(double));
     **dest = *src;
+
+#ifdef _DEBUG
+    fprintf(stderr, "_create_weather_num:%p\n", *dest);
+#endif
+
 }
 
 void _create_weather_str(char **dest, char *src)
@@ -35,6 +56,35 @@ void _create_weather_str(char **dest, char *src)
     uint16_t len = strlen(src) + 1;
     *dest = malloc(sizeof(char) * len);
     strncpy(*dest, src, len);
+
+#ifdef _DEBUG
+    fprintf(stderr, "_create_weather_str:%p\n", *dest);
+#endif
+
+}
+
+void _destroy_weather_num(double *dest)
+{
+    if (dest == NULL)
+        return;
+
+#ifdef _DEBUG
+    fprintf(stderr, "_destroy_weather_num:%p\n", dest);
+#endif
+    
+    free(dest);
+}
+
+void _destroy_weather_str(char *dest)
+{
+    if (dest == NULL)
+        return;
+
+#ifdef _DEBUG
+    fprintf(stderr, "_destroy_weather_str:%p\n", dest);
+#endif
+    
+    free(dest);
 }
 
 /* create weather */
@@ -328,11 +378,11 @@ weather_data *load_json_weather_data(cJSON *json_root)
     json_timezone = cJSON_GetObjectItem(json_root, "timezone");
     json_timezone_abbreviation = cJSON_GetObjectItem(json_root, "timezone_abbreviation");
 
-    _set_weather_data_num(&data->latitude, json_latitude);
-    _set_weather_data_num(&data->longitude, json_longitude);
-    _set_weather_data_num(&data->elevation, json_elevation);
-    _set_weather_data_str(&data->timezone, json_timezone);
-    _set_weather_data_str(&data->timezone_abbreviation, json_timezone_abbreviation);
+    _load_weather_data_num(&data->latitude, json_latitude);
+    _load_weather_data_num(&data->longitude, json_longitude);
+    _load_weather_data_num(&data->elevation, json_elevation);
+    _load_weather_data_str(&data->timezone, json_timezone);
+    _load_weather_data_str(&data->timezone_abbreviation, json_timezone_abbreviation);
 
     /* data subsections */
 
@@ -432,23 +482,23 @@ weather_current_units *load_json_weather_current_units(cJSON *json_root)
     json_wind_direction_10m = cJSON_GetObjectItem(json_root, "wind_direction_10m");
     json_wind_gusts_10m = cJSON_GetObjectItem(json_root, "wind_gusts_10m");
 
-    _set_weather_data_str(&data->time, json_time);
-    _set_weather_data_str(&data->interval, json_interval);
-    _set_weather_data_str(&data->temperature_2m, json_temperature_2m);
-    _set_weather_data_str(&data->relative_humidity_2m, json_relative_humidity);
-    _set_weather_data_str(&data->apparent_temperature, json_apparent_temperature);
-    _set_weather_data_str(&data->is_day, json_is_day);
-    _set_weather_data_str(&data->precipitation, json_precipitation);
-    _set_weather_data_str(&data->rain, json_rain);
-    _set_weather_data_str(&data->showers, json_showers);
-    _set_weather_data_str(&data->snowfall, json_snowfall);
-    _set_weather_data_str(&data->weather_code, json_weather_code);
-    _set_weather_data_str(&data->cloud_cover, json_cloud_cover);
-    _set_weather_data_str(&data->pressure_msl, json_pressure_msl);
-    _set_weather_data_str(&data->surface_pressure, json_surface_pressure);
-    _set_weather_data_str(&data->wind_speed_10m, json_wind_speed_10m);
-    _set_weather_data_str(&data->wind_direction_10m, json_wind_direction_10m);
-    _set_weather_data_str(&data->wind_gusts_10m, json_wind_gusts_10m);
+    _load_weather_data_str(&data->time, json_time);
+    _load_weather_data_str(&data->interval, json_interval);
+    _load_weather_data_str(&data->temperature_2m, json_temperature_2m);
+    _load_weather_data_str(&data->relative_humidity_2m, json_relative_humidity);
+    _load_weather_data_str(&data->apparent_temperature, json_apparent_temperature);
+    _load_weather_data_str(&data->is_day, json_is_day);
+    _load_weather_data_str(&data->precipitation, json_precipitation);
+    _load_weather_data_str(&data->rain, json_rain);
+    _load_weather_data_str(&data->showers, json_showers);
+    _load_weather_data_str(&data->snowfall, json_snowfall);
+    _load_weather_data_str(&data->weather_code, json_weather_code);
+    _load_weather_data_str(&data->cloud_cover, json_cloud_cover);
+    _load_weather_data_str(&data->pressure_msl, json_pressure_msl);
+    _load_weather_data_str(&data->surface_pressure, json_surface_pressure);
+    _load_weather_data_str(&data->wind_speed_10m, json_wind_speed_10m);
+    _load_weather_data_str(&data->wind_direction_10m, json_wind_direction_10m);
+    _load_weather_data_str(&data->wind_gusts_10m, json_wind_gusts_10m);
 
     return data;
 }
@@ -525,23 +575,23 @@ weather_current *load_json_weather_current(cJSON *json_root)
     json_wind_direction_10m = cJSON_GetObjectItem(json_root, "wind_direction_10m");
     json_wind_gusts_10m = cJSON_GetObjectItem(json_root, "wind_gusts_10m");
 
-    _set_weather_data_num(&data->time, json_time);
-    _set_weather_data_num(&data->interval, json_interval);
-    _set_weather_data_num(&data->temperature_2m, json_temperature_2m);
-    _set_weather_data_num(&data->relative_humidity_2m, json_relative_humidity);
-    _set_weather_data_num(&data->apparent_temperature, json_apparent_temperature);
-    _set_weather_data_num(&data->is_day, json_is_day);
-    _set_weather_data_num(&data->precipitation, json_precipitation);
-    _set_weather_data_num(&data->rain, json_rain);
-    _set_weather_data_num(&data->showers, json_showers);
-    _set_weather_data_num(&data->snowfall, json_snowfall);
-    _set_weather_data_num(&data->weather_code, json_weather_code);
-    _set_weather_data_num(&data->cloud_cover, json_cloud_cover);
-    _set_weather_data_num(&data->pressure_msl, json_pressure_msl);
-    _set_weather_data_num(&data->surface_pressure, json_surface_pressure);
-    _set_weather_data_num(&data->wind_speed_10m, json_wind_speed_10m);
-    _set_weather_data_num(&data->wind_direction_10m, json_wind_direction_10m);
-    _set_weather_data_num(&data->wind_gusts_10m, json_wind_gusts_10m);
+    _load_weather_data_num(&data->time, json_time);
+    _load_weather_data_num(&data->interval, json_interval);
+    _load_weather_data_num(&data->temperature_2m, json_temperature_2m);
+    _load_weather_data_num(&data->relative_humidity_2m, json_relative_humidity);
+    _load_weather_data_num(&data->apparent_temperature, json_apparent_temperature);
+    _load_weather_data_num(&data->is_day, json_is_day);
+    _load_weather_data_num(&data->precipitation, json_precipitation);
+    _load_weather_data_num(&data->rain, json_rain);
+    _load_weather_data_num(&data->showers, json_showers);
+    _load_weather_data_num(&data->snowfall, json_snowfall);
+    _load_weather_data_num(&data->weather_code, json_weather_code);
+    _load_weather_data_num(&data->cloud_cover, json_cloud_cover);
+    _load_weather_data_num(&data->pressure_msl, json_pressure_msl);
+    _load_weather_data_num(&data->surface_pressure, json_surface_pressure);
+    _load_weather_data_num(&data->wind_speed_10m, json_wind_speed_10m);
+    _load_weather_data_num(&data->wind_direction_10m, json_wind_direction_10m);
+    _load_weather_data_num(&data->wind_gusts_10m, json_wind_gusts_10m);
 
     return data;
 }
@@ -693,48 +743,48 @@ weather_hourly_units *load_json_weather_hourly_units(cJSON *json_root)
     json_soil_moisture_9_to_27cm = cJSON_GetObjectItem(json_root, "moisture_9_to_27cm");
     json_soil_moisture_27_to_81cm = cJSON_GetObjectItem(json_root, "moisture_27_to_81cm");
 
-    _set_weather_data_str(&data->time, json_time);
-    _set_weather_data_str(&data->temperature_2m, json_temperature_2m);
-    _set_weather_data_str(&data->relative_humidity_2m, json_relative_humidity_2m);
-    _set_weather_data_str(&data->dew_point_2m, json_dew_point_2m);
-    _set_weather_data_str(&data->apparent_temperature, json_apparent_temperature);
-    _set_weather_data_str(&data->precipitation_probability, json_precipitation_probability);
-    _set_weather_data_str(&data->precipitation, json_precipitation);
-    _set_weather_data_str(&data->rain, json_rain);
-    _set_weather_data_str(&data->showers, json_showers);
-    _set_weather_data_str(&data->snowfall, json_snowfall);
-    _set_weather_data_str(&data->snow_depth, json_snow_depth);
-    _set_weather_data_str(&data->weather_code, json_weather_code);
-    _set_weather_data_str(&data->pressure_msl, json_pressure_msl);
-    _set_weather_data_str(&data->surface_pressure, json_surface_pressure);
-    _set_weather_data_str(&data->cloud_cover, json_cloud_cover);
-    _set_weather_data_str(&data->cloud_cover_low, json_cloud_cover_low);
-    _set_weather_data_str(&data->cloud_cover_mid, json_cloud_cover_mid);
-    _set_weather_data_str(&data->cloud_cover_high, json_cloud_cover_high);
-    _set_weather_data_str(&data->visibility, json_visibility);
-    _set_weather_data_str(&data->evapotranspiration, json_evapotranspiration);
-    _set_weather_data_str(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
-    _set_weather_data_str(&data->vapour_pressure_deficit, json_vapour_pressure_deficit);
-    _set_weather_data_str(&data->wind_speed_10m, json_wind_speed_10m);
-    _set_weather_data_str(&data->wind_speed_80m, json_wind_speed_80m);
-    _set_weather_data_str(&data->wind_speed_120m, json_wind_speed_120m);
-    _set_weather_data_str(&data->wind_speed_180m, json_wind_speed_180m);
-    _set_weather_data_str(&data->wind_direction_10m, json_wind_direction_10m);
-    _set_weather_data_str(&data->wind_direction_80m, json_wind_direction_80m);
-    _set_weather_data_str(&data->wind_direction_120m, json_wind_direction_120m);
-    _set_weather_data_str(&data->wind_direction_180m, json_wind_direction_180m);
-    _set_weather_data_str(&data->wind_gusts_10m, json_wind_gusts_10m);
-    _set_weather_data_str(&data->temperature_2m, json_temperature_80m);
-    _set_weather_data_str(&data->temperature_120m, json_temperature_120m);
-    _set_weather_data_str(&data->temperature_180m, json_temperature_180m);
-    _set_weather_data_str(&data->soil_temperature_0cm, json_soil_temperature_0cm);
-    _set_weather_data_str(&data->soil_temperature_6cm, json_soil_temperature_6cm);
-    _set_weather_data_str(&data->soil_temperature_18cm, json_soil_temperature_18cm);
-    _set_weather_data_str(&data->soil_temperature_54cm, json_soil_temperature_54cm);
-    _set_weather_data_str(&data->soil_moisture_0_to_1cm, json_soil_moisture_0_to_1cm);
-    _set_weather_data_str(&data->soil_moisture_3_to_9cm, json_soil_moisture_3_to_9cm);
-    _set_weather_data_str(&data->soil_moisture_9_to_27cm, json_soil_moisture_9_to_27cm);
-    _set_weather_data_str(&data->soil_moisture_9_to_27cm, json_soil_moisture_27_to_81cm);
+    _load_weather_data_str(&data->time, json_time);
+    _load_weather_data_str(&data->temperature_2m, json_temperature_2m);
+    _load_weather_data_str(&data->relative_humidity_2m, json_relative_humidity_2m);
+    _load_weather_data_str(&data->dew_point_2m, json_dew_point_2m);
+    _load_weather_data_str(&data->apparent_temperature, json_apparent_temperature);
+    _load_weather_data_str(&data->precipitation_probability, json_precipitation_probability);
+    _load_weather_data_str(&data->precipitation, json_precipitation);
+    _load_weather_data_str(&data->rain, json_rain);
+    _load_weather_data_str(&data->showers, json_showers);
+    _load_weather_data_str(&data->snowfall, json_snowfall);
+    _load_weather_data_str(&data->snow_depth, json_snow_depth);
+    _load_weather_data_str(&data->weather_code, json_weather_code);
+    _load_weather_data_str(&data->pressure_msl, json_pressure_msl);
+    _load_weather_data_str(&data->surface_pressure, json_surface_pressure);
+    _load_weather_data_str(&data->cloud_cover, json_cloud_cover);
+    _load_weather_data_str(&data->cloud_cover_low, json_cloud_cover_low);
+    _load_weather_data_str(&data->cloud_cover_mid, json_cloud_cover_mid);
+    _load_weather_data_str(&data->cloud_cover_high, json_cloud_cover_high);
+    _load_weather_data_str(&data->visibility, json_visibility);
+    _load_weather_data_str(&data->evapotranspiration, json_evapotranspiration);
+    _load_weather_data_str(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
+    _load_weather_data_str(&data->vapour_pressure_deficit, json_vapour_pressure_deficit);
+    _load_weather_data_str(&data->wind_speed_10m, json_wind_speed_10m);
+    _load_weather_data_str(&data->wind_speed_80m, json_wind_speed_80m);
+    _load_weather_data_str(&data->wind_speed_120m, json_wind_speed_120m);
+    _load_weather_data_str(&data->wind_speed_180m, json_wind_speed_180m);
+    _load_weather_data_str(&data->wind_direction_10m, json_wind_direction_10m);
+    _load_weather_data_str(&data->wind_direction_80m, json_wind_direction_80m);
+    _load_weather_data_str(&data->wind_direction_120m, json_wind_direction_120m);
+    _load_weather_data_str(&data->wind_direction_180m, json_wind_direction_180m);
+    _load_weather_data_str(&data->wind_gusts_10m, json_wind_gusts_10m);
+    _load_weather_data_str(&data->temperature_2m, json_temperature_80m);
+    _load_weather_data_str(&data->temperature_120m, json_temperature_120m);
+    _load_weather_data_str(&data->temperature_180m, json_temperature_180m);
+    _load_weather_data_str(&data->soil_temperature_0cm, json_soil_temperature_0cm);
+    _load_weather_data_str(&data->soil_temperature_6cm, json_soil_temperature_6cm);
+    _load_weather_data_str(&data->soil_temperature_18cm, json_soil_temperature_18cm);
+    _load_weather_data_str(&data->soil_temperature_54cm, json_soil_temperature_54cm);
+    _load_weather_data_str(&data->soil_moisture_0_to_1cm, json_soil_moisture_0_to_1cm);
+    _load_weather_data_str(&data->soil_moisture_3_to_9cm, json_soil_moisture_3_to_9cm);
+    _load_weather_data_str(&data->soil_moisture_9_to_27cm, json_soil_moisture_9_to_27cm);
+    _load_weather_data_str(&data->soil_moisture_9_to_27cm, json_soil_moisture_27_to_81cm);
 
     return data;
 }
@@ -886,48 +936,48 @@ weather_hourly *load_json_weather_hourly(cJSON *json_root)
     json_soil_moisture_9_to_27cm = cJSON_GetObjectItem(json_root, "moisture_9_to_27cm");
     json_soil_moisture_27_to_81cm = cJSON_GetObjectItem(json_root, "moisture_27_to_81cm");
 
-    _set_weather_data_num(&data->time, json_time);
-    _set_weather_data_num(&data->temperature_2m, json_temperature_2m);
-    _set_weather_data_num(&data->relative_humidity_2m, json_relative_humidity_2m);
-    _set_weather_data_num(&data->dew_point_2m, json_dew_point_2m);
-    _set_weather_data_num(&data->apparent_temperature, json_apparent_temperature);
-    _set_weather_data_num(&data->precipitation_probability, json_precipitation_probability);
-    _set_weather_data_num(&data->precipitation, json_precipitation);
-    _set_weather_data_num(&data->rain, json_rain);
-    _set_weather_data_num(&data->showers, json_showers);
-    _set_weather_data_num(&data->snowfall, json_snowfall);
-    _set_weather_data_num(&data->snow_depth, json_snow_depth);
-    _set_weather_data_num(&data->weather_code, json_weather_code);
-    _set_weather_data_num(&data->pressure_msl, json_pressure_msl);
-    _set_weather_data_num(&data->surface_pressure, json_surface_pressure);
-    _set_weather_data_num(&data->cloud_cover, json_cloud_cover);
-    _set_weather_data_num(&data->cloud_cover_low, json_cloud_cover_low);
-    _set_weather_data_num(&data->cloud_cover_mid, json_cloud_cover_mid);
-    _set_weather_data_num(&data->cloud_cover_high, json_cloud_cover_high);
-    _set_weather_data_num(&data->visibility, json_visibility);
-    _set_weather_data_num(&data->evapotranspiration, json_evapotranspiration);
-    _set_weather_data_num(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
-    _set_weather_data_num(&data->vapour_pressure_deficit, json_vapour_pressure_deficit);
-    _set_weather_data_num(&data->wind_speed_10m, json_wind_speed_10m);
-    _set_weather_data_num(&data->wind_speed_80m, json_wind_speed_80m);
-    _set_weather_data_num(&data->wind_speed_120m, json_wind_speed_120m);
-    _set_weather_data_num(&data->wind_speed_180m, json_wind_speed_180m);
-    _set_weather_data_num(&data->wind_direction_10m, json_wind_direction_10m);
-    _set_weather_data_num(&data->wind_direction_80m, json_wind_direction_80m);
-    _set_weather_data_num(&data->wind_direction_120m, json_wind_direction_120m);
-    _set_weather_data_num(&data->wind_direction_180m, json_wind_direction_180m);
-    _set_weather_data_num(&data->wind_gusts_10m, json_wind_gusts_10m);
-    _set_weather_data_num(&data->temperature_2m, json_temperature_80m);
-    _set_weather_data_num(&data->temperature_120m, json_temperature_120m);
-    _set_weather_data_num(&data->temperature_180m, json_temperature_180m);
-    _set_weather_data_num(&data->soil_temperature_0cm, json_soil_temperature_0cm);
-    _set_weather_data_num(&data->soil_temperature_6cm, json_soil_temperature_6cm);
-    _set_weather_data_num(&data->soil_temperature_18cm, json_soil_temperature_18cm);
-    _set_weather_data_num(&data->soil_temperature_54cm, json_soil_temperature_54cm);
-    _set_weather_data_num(&data->soil_moisture_0_to_1cm, json_soil_moisture_0_to_1cm);
-    _set_weather_data_num(&data->soil_moisture_3_to_9cm, json_soil_moisture_3_to_9cm);
-    _set_weather_data_num(&data->soil_moisture_9_to_27cm, json_soil_moisture_9_to_27cm);
-    _set_weather_data_num(&data->soil_moisture_9_to_27cm, json_soil_moisture_27_to_81cm);
+    _load_weather_data_num(&data->time, json_time);
+    _load_weather_data_num(&data->temperature_2m, json_temperature_2m);
+    _load_weather_data_num(&data->relative_humidity_2m, json_relative_humidity_2m);
+    _load_weather_data_num(&data->dew_point_2m, json_dew_point_2m);
+    _load_weather_data_num(&data->apparent_temperature, json_apparent_temperature);
+    _load_weather_data_num(&data->precipitation_probability, json_precipitation_probability);
+    _load_weather_data_num(&data->precipitation, json_precipitation);
+    _load_weather_data_num(&data->rain, json_rain);
+    _load_weather_data_num(&data->showers, json_showers);
+    _load_weather_data_num(&data->snowfall, json_snowfall);
+    _load_weather_data_num(&data->snow_depth, json_snow_depth);
+    _load_weather_data_num(&data->weather_code, json_weather_code);
+    _load_weather_data_num(&data->pressure_msl, json_pressure_msl);
+    _load_weather_data_num(&data->surface_pressure, json_surface_pressure);
+    _load_weather_data_num(&data->cloud_cover, json_cloud_cover);
+    _load_weather_data_num(&data->cloud_cover_low, json_cloud_cover_low);
+    _load_weather_data_num(&data->cloud_cover_mid, json_cloud_cover_mid);
+    _load_weather_data_num(&data->cloud_cover_high, json_cloud_cover_high);
+    _load_weather_data_num(&data->visibility, json_visibility);
+    _load_weather_data_num(&data->evapotranspiration, json_evapotranspiration);
+    _load_weather_data_num(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
+    _load_weather_data_num(&data->vapour_pressure_deficit, json_vapour_pressure_deficit);
+    _load_weather_data_num(&data->wind_speed_10m, json_wind_speed_10m);
+    _load_weather_data_num(&data->wind_speed_80m, json_wind_speed_80m);
+    _load_weather_data_num(&data->wind_speed_120m, json_wind_speed_120m);
+    _load_weather_data_num(&data->wind_speed_180m, json_wind_speed_180m);
+    _load_weather_data_num(&data->wind_direction_10m, json_wind_direction_10m);
+    _load_weather_data_num(&data->wind_direction_80m, json_wind_direction_80m);
+    _load_weather_data_num(&data->wind_direction_120m, json_wind_direction_120m);
+    _load_weather_data_num(&data->wind_direction_180m, json_wind_direction_180m);
+    _load_weather_data_num(&data->wind_gusts_10m, json_wind_gusts_10m);
+    _load_weather_data_num(&data->temperature_2m, json_temperature_80m);
+    _load_weather_data_num(&data->temperature_120m, json_temperature_120m);
+    _load_weather_data_num(&data->temperature_180m, json_temperature_180m);
+    _load_weather_data_num(&data->soil_temperature_0cm, json_soil_temperature_0cm);
+    _load_weather_data_num(&data->soil_temperature_6cm, json_soil_temperature_6cm);
+    _load_weather_data_num(&data->soil_temperature_18cm, json_soil_temperature_18cm);
+    _load_weather_data_num(&data->soil_temperature_54cm, json_soil_temperature_54cm);
+    _load_weather_data_num(&data->soil_moisture_0_to_1cm, json_soil_moisture_0_to_1cm);
+    _load_weather_data_num(&data->soil_moisture_3_to_9cm, json_soil_moisture_3_to_9cm);
+    _load_weather_data_num(&data->soil_moisture_9_to_27cm, json_soil_moisture_9_to_27cm);
+    _load_weather_data_num(&data->soil_moisture_9_to_27cm, json_soil_moisture_27_to_81cm);
 
     return data;
 }
@@ -1022,29 +1072,29 @@ weather_daily_units *load_json_weather_daily_units(cJSON *json_root)
     json_shortwave_radiation_sum = cJSON_GetObjectItem(json_root, "shortwave_radiation_sum");
     json_et0_fao_evapotranspiration = cJSON_GetObjectItem(json_root, "et0_fao_evapotranspiration");
 
-    _set_weather_data_str(&data->time, json_time);
-    _set_weather_data_str(&data->weather_code, json_weather_code);
-    _set_weather_data_str(&data->temperature_2m_max, json_temperature_2m_max);
-    _set_weather_data_str(&data->temperature_2m_min, json_temperature_2m_min);
-    _set_weather_data_str(&data->apparent_temperature_max, json_apparent_temperature_max);
-    _set_weather_data_str(&data->apparent_temperature_min, json_apparent_temperature_min);
-    _set_weather_data_str(&data->sunrise, json_sunrise);
-    _set_weather_data_str(&data->sunset, json_sunset);
-    _set_weather_data_str(&data->daylight_duration, json_daylight_duration);
-    _set_weather_data_str(&data->sunshine_duration, json_sunshine_duration);
-    _set_weather_data_str(&data->uv_index_max, json_uv_index_max);
-    _set_weather_data_str(&data->uv_index_clear_sky_max, json_uv_index_clear_sky_max);
-    _set_weather_data_str(&data->precipitation_sum, json_precipitation_sum);
-    _set_weather_data_str(&data->rain_sum, json_rain_sum);
-    _set_weather_data_str(&data->showers_sum, json_showers_sum);
-    _set_weather_data_str(&data->snowfall_sum, json_snowfall_sum);
-    _set_weather_data_str(&data->precipitation_hours, json_precipitation_hours);
-    _set_weather_data_str(&data->precipitation_probability_max, json_precipitation_probability_max);
-    _set_weather_data_str(&data->wind_speed_10m_max, json_wind_speed_10m_max);
-    _set_weather_data_str(&data->wind_gusts_10m_max, json_wind_gusts_10m_max);
-    _set_weather_data_str(&data->wind_direction_10m_dominant, json_wind_direction_10m_dominant);
-    _set_weather_data_str(&data->shortwave_radiation_sum, json_shortwave_radiation_sum);
-    _set_weather_data_str(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
+    _load_weather_data_str(&data->time, json_time);
+    _load_weather_data_str(&data->weather_code, json_weather_code);
+    _load_weather_data_str(&data->temperature_2m_max, json_temperature_2m_max);
+    _load_weather_data_str(&data->temperature_2m_min, json_temperature_2m_min);
+    _load_weather_data_str(&data->apparent_temperature_max, json_apparent_temperature_max);
+    _load_weather_data_str(&data->apparent_temperature_min, json_apparent_temperature_min);
+    _load_weather_data_str(&data->sunrise, json_sunrise);
+    _load_weather_data_str(&data->sunset, json_sunset);
+    _load_weather_data_str(&data->daylight_duration, json_daylight_duration);
+    _load_weather_data_str(&data->sunshine_duration, json_sunshine_duration);
+    _load_weather_data_str(&data->uv_index_max, json_uv_index_max);
+    _load_weather_data_str(&data->uv_index_clear_sky_max, json_uv_index_clear_sky_max);
+    _load_weather_data_str(&data->precipitation_sum, json_precipitation_sum);
+    _load_weather_data_str(&data->rain_sum, json_rain_sum);
+    _load_weather_data_str(&data->showers_sum, json_showers_sum);
+    _load_weather_data_str(&data->snowfall_sum, json_snowfall_sum);
+    _load_weather_data_str(&data->precipitation_hours, json_precipitation_hours);
+    _load_weather_data_str(&data->precipitation_probability_max, json_precipitation_probability_max);
+    _load_weather_data_str(&data->wind_speed_10m_max, json_wind_speed_10m_max);
+    _load_weather_data_str(&data->wind_gusts_10m_max, json_wind_gusts_10m_max);
+    _load_weather_data_str(&data->wind_direction_10m_dominant, json_wind_direction_10m_dominant);
+    _load_weather_data_str(&data->shortwave_radiation_sum, json_shortwave_radiation_sum);
+    _load_weather_data_str(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
 
     return data;
 }
@@ -1139,29 +1189,29 @@ weather_daily *load_json_weather_daily(cJSON *json_root)
     json_shortwave_radiation_sum = cJSON_GetObjectItem(json_root, "shortwave_radiation_sum");
     json_et0_fao_evapotranspiration = cJSON_GetObjectItem(json_root, "et0_fao_evapotranspiration");
 
-    _set_weather_data_num(&data->time, json_time);
-    _set_weather_data_num(&data->weather_code, json_weather_code);
-    _set_weather_data_num(&data->temperature_2m_max, json_temperature_2m_max);
-    _set_weather_data_num(&data->temperature_2m_min, json_temperature_2m_min);
-    _set_weather_data_num(&data->apparent_temperature_max, json_apparent_temperature_max);
-    _set_weather_data_num(&data->apparent_temperature_min, json_apparent_temperature_min);
-    _set_weather_data_num(&data->sunrise, json_sunrise);
-    _set_weather_data_num(&data->sunset, json_sunset);
-    _set_weather_data_num(&data->daylight_duration, json_daylight_duration);
-    _set_weather_data_num(&data->sunshine_duration, json_sunshine_duration);
-    _set_weather_data_num(&data->uv_index_max, json_uv_index_max);
-    _set_weather_data_num(&data->uv_index_clear_sky_max, json_uv_index_clear_sky_max);
-    _set_weather_data_num(&data->precipitation_sum, json_precipitation_sum);
-    _set_weather_data_num(&data->rain_sum, json_rain_sum);
-    _set_weather_data_num(&data->showers_sum, json_showers_sum);
-    _set_weather_data_num(&data->snowfall_sum, json_snowfall_sum);
-    _set_weather_data_num(&data->precipitation_hours, json_precipitation_hours);
-    _set_weather_data_num(&data->precipitation_probability_max, json_precipitation_probability_max);
-    _set_weather_data_num(&data->wind_speed_10m_max, json_wind_speed_10m_max);
-    _set_weather_data_num(&data->wind_gusts_10m_max, json_wind_gusts_10m_max);
-    _set_weather_data_num(&data->wind_direction_10m_dominant, json_wind_direction_10m_dominant);
-    _set_weather_data_num(&data->shortwave_radiation_sum, json_shortwave_radiation_sum);
-    _set_weather_data_num(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
+    _load_weather_data_num(&data->time, json_time);
+    _load_weather_data_num(&data->weather_code, json_weather_code);
+    _load_weather_data_num(&data->temperature_2m_max, json_temperature_2m_max);
+    _load_weather_data_num(&data->temperature_2m_min, json_temperature_2m_min);
+    _load_weather_data_num(&data->apparent_temperature_max, json_apparent_temperature_max);
+    _load_weather_data_num(&data->apparent_temperature_min, json_apparent_temperature_min);
+    _load_weather_data_num(&data->sunrise, json_sunrise);
+    _load_weather_data_num(&data->sunset, json_sunset);
+    _load_weather_data_num(&data->daylight_duration, json_daylight_duration);
+    _load_weather_data_num(&data->sunshine_duration, json_sunshine_duration);
+    _load_weather_data_num(&data->uv_index_max, json_uv_index_max);
+    _load_weather_data_num(&data->uv_index_clear_sky_max, json_uv_index_clear_sky_max);
+    _load_weather_data_num(&data->precipitation_sum, json_precipitation_sum);
+    _load_weather_data_num(&data->rain_sum, json_rain_sum);
+    _load_weather_data_num(&data->showers_sum, json_showers_sum);
+    _load_weather_data_num(&data->snowfall_sum, json_snowfall_sum);
+    _load_weather_data_num(&data->precipitation_hours, json_precipitation_hours);
+    _load_weather_data_num(&data->precipitation_probability_max, json_precipitation_probability_max);
+    _load_weather_data_num(&data->wind_speed_10m_max, json_wind_speed_10m_max);
+    _load_weather_data_num(&data->wind_gusts_10m_max, json_wind_gusts_10m_max);
+    _load_weather_data_num(&data->wind_direction_10m_dominant, json_wind_direction_10m_dominant);
+    _load_weather_data_num(&data->shortwave_radiation_sum, json_shortwave_radiation_sum);
+    _load_weather_data_num(&data->et0_fao_evapotranspiration, json_et0_fao_evapotranspiration);
 
     return data;
 }
@@ -1170,11 +1220,11 @@ weather_daily *load_json_weather_daily(cJSON *json_root)
 
 void destroy_weather_data(weather_data *data)
 {
-    free(data->latitude);
-    free(data->longitude);
-    free(data->elevation);
-    free(data->timezone);
-    free(data->timezone_abbreviation);
+    _destroy_weather_num(data->latitude);
+    _destroy_weather_num(data->longitude);
+    _destroy_weather_num(data->elevation);
+    _destroy_weather_str(data->timezone);
+    _destroy_weather_str(data->timezone_abbreviation);
 
     destroy_weather_current_units(data->current_units);
     destroy_weather_current(data->current);
@@ -1191,4 +1241,208 @@ void destroy_weather_data(weather_data *data)
     free(data->daily);
 }
 
-// TODO implement functions
+void destroy_weather_current_units(weather_current_units *data)
+{
+    if (data == NULL)
+        return;
+    
+    _destroy_weather_str(data->time);
+    _destroy_weather_str(data->interval);
+    _destroy_weather_str(data->temperature_2m);
+    _destroy_weather_str(data->relative_humidity_2m);
+    _destroy_weather_str(data->apparent_temperature);
+    _destroy_weather_str(data->is_day);
+    _destroy_weather_str(data->precipitation);
+    _destroy_weather_str(data->rain);
+    _destroy_weather_str(data->showers);
+    _destroy_weather_str(data->snowfall);
+    _destroy_weather_str(data->weather_code);
+    _destroy_weather_str(data->cloud_cover);
+    _destroy_weather_str(data->pressure_msl);
+    _destroy_weather_str(data->surface_pressure);
+    _destroy_weather_str(data->wind_speed_10m);
+    _destroy_weather_str(data->wind_direction_10m);
+    _destroy_weather_str(data->wind_gusts_10m);
+}
+
+void destroy_weather_current(weather_current *data)
+{
+    if (data == NULL)
+        return;
+    
+    _destroy_weather_num(data->time);
+    _destroy_weather_num(data->interval);
+    _destroy_weather_num(data->temperature_2m);
+    _destroy_weather_num(data->relative_humidity_2m);
+    _destroy_weather_num(data->apparent_temperature);
+    _destroy_weather_num(data->is_day);
+    _destroy_weather_num(data->precipitation);
+    _destroy_weather_num(data->rain);
+    _destroy_weather_num(data->showers);
+    _destroy_weather_num(data->snowfall);
+    _destroy_weather_num(data->weather_code);
+    _destroy_weather_num(data->cloud_cover);
+    _destroy_weather_num(data->pressure_msl);
+    _destroy_weather_num(data->surface_pressure);
+    _destroy_weather_num(data->wind_speed_10m);
+    _destroy_weather_num(data->wind_direction_10m);
+    _destroy_weather_num(data->wind_gusts_10m);
+}
+
+void destroy_weather_hourly_units(weather_hourly_units *data)
+{
+    if (data == NULL)
+        return;
+    
+    _destroy_weather_str(data->time);
+    _destroy_weather_str(data->temperature_2m);
+    _destroy_weather_str(data->relative_humidity_2m);
+    _destroy_weather_str(data->dew_point_2m);
+    _destroy_weather_str(data->apparent_temperature);
+    _destroy_weather_str(data->precipitation_probability);
+    _destroy_weather_str(data->precipitation);
+    _destroy_weather_str(data->rain);
+    _destroy_weather_str(data->showers);
+    _destroy_weather_str(data->snowfall);
+    _destroy_weather_str(data->snow_depth);
+    _destroy_weather_str(data->weather_code);
+    _destroy_weather_str(data->pressure_msl);
+    _destroy_weather_str(data->surface_pressure);
+    _destroy_weather_str(data->cloud_cover);
+    _destroy_weather_str(data->cloud_cover_low);
+    _destroy_weather_str(data->cloud_cover_mid);
+    _destroy_weather_str(data->cloud_cover_high);
+    _destroy_weather_str(data->visibility);
+    _destroy_weather_str(data->evapotranspiration);
+    _destroy_weather_str(data->et0_fao_evapotranspiration);
+    _destroy_weather_str(data->vapour_pressure_deficit);
+    _destroy_weather_str(data->wind_speed_10m);
+    _destroy_weather_str(data->wind_speed_80m);
+    _destroy_weather_str(data->wind_speed_120m);
+    _destroy_weather_str(data->wind_speed_180m);
+    _destroy_weather_str(data->wind_direction_10m);
+    _destroy_weather_str(data->wind_direction_80m);
+    _destroy_weather_str(data->wind_direction_120m);
+    _destroy_weather_str(data->wind_direction_180m);
+    _destroy_weather_str(data->wind_gusts_10m);
+    _destroy_weather_str(data->temperature_80m);
+    _destroy_weather_str(data->temperature_120m);
+    _destroy_weather_str(data->temperature_180m);
+    _destroy_weather_str(data->soil_temperature_0cm);
+    _destroy_weather_str(data->soil_temperature_6cm);
+    _destroy_weather_str(data->soil_temperature_18cm);
+    _destroy_weather_str(data->soil_temperature_54cm);
+    _destroy_weather_str(data->soil_moisture_0_to_1cm);
+    _destroy_weather_str(data->soil_moisture_3_to_9cm);
+    _destroy_weather_str(data->soil_moisture_9_to_27cm);
+    _destroy_weather_str(data->soil_moisture_27_to_81cm);
+}
+
+void destroy_weather_hourly(weather_hourly *data)
+{
+    if (data == NULL)
+        return;
+    
+    _destroy_weather_num(data->time);
+    _destroy_weather_num(data->temperature_2m);
+    _destroy_weather_num(data->relative_humidity_2m);
+    _destroy_weather_num(data->dew_point_2m);
+    _destroy_weather_num(data->apparent_temperature);
+    _destroy_weather_num(data->precipitation_probability);
+    _destroy_weather_num(data->precipitation);
+    _destroy_weather_num(data->rain);
+    _destroy_weather_num(data->showers);
+    _destroy_weather_num(data->snowfall);
+    _destroy_weather_num(data->snow_depth);
+    _destroy_weather_num(data->weather_code);
+    _destroy_weather_num(data->pressure_msl);
+    _destroy_weather_num(data->surface_pressure);
+    _destroy_weather_num(data->cloud_cover);
+    _destroy_weather_num(data->cloud_cover_low);
+    _destroy_weather_num(data->cloud_cover_mid);
+    _destroy_weather_num(data->cloud_cover_high);
+    _destroy_weather_num(data->visibility);
+    _destroy_weather_num(data->evapotranspiration);
+    _destroy_weather_num(data->et0_fao_evapotranspiration);
+    _destroy_weather_num(data->vapour_pressure_deficit);
+    _destroy_weather_num(data->wind_speed_10m);
+    _destroy_weather_num(data->wind_speed_80m);
+    _destroy_weather_num(data->wind_speed_120m);
+    _destroy_weather_num(data->wind_speed_180m);
+    _destroy_weather_num(data->wind_direction_10m);
+    _destroy_weather_num(data->wind_direction_80m);
+    _destroy_weather_num(data->wind_direction_120m);
+    _destroy_weather_num(data->wind_direction_180m);
+    _destroy_weather_num(data->wind_gusts_10m);
+    _destroy_weather_num(data->temperature_80m);
+    _destroy_weather_num(data->temperature_120m);
+    _destroy_weather_num(data->temperature_180m);
+    _destroy_weather_num(data->soil_temperature_0cm);
+    _destroy_weather_num(data->soil_temperature_6cm);
+    _destroy_weather_num(data->soil_temperature_18cm);
+    _destroy_weather_num(data->soil_temperature_54cm);
+    _destroy_weather_num(data->soil_moisture_0_to_1cm);
+    _destroy_weather_num(data->soil_moisture_3_to_9cm);
+    _destroy_weather_num(data->soil_moisture_9_to_27cm);
+    _destroy_weather_num(data->soil_moisture_27_to_81cm);
+}
+
+void destroy_weather_daily_units(weather_daily_units *data)
+{
+    if (data == NULL)
+        return;
+    
+    _destroy_weather_str(data->time);
+    _destroy_weather_str(data->weather_code);
+    _destroy_weather_str(data->temperature_2m_max);
+    _destroy_weather_str(data->temperature_2m_min);
+    _destroy_weather_str(data->apparent_temperature_max);
+    _destroy_weather_str(data->apparent_temperature_min);
+    _destroy_weather_str(data->sunrise);
+    _destroy_weather_str(data->sunset);
+    _destroy_weather_str(data->daylight_duration);
+    _destroy_weather_str(data->sunshine_duration);
+    _destroy_weather_str(data->uv_index_max);
+    _destroy_weather_str(data->uv_index_clear_sky_max);
+    _destroy_weather_str(data->precipitation_sum);
+    _destroy_weather_str(data->rain_sum);
+    _destroy_weather_str(data->showers_sum);
+    _destroy_weather_str(data->snowfall_sum);
+    _destroy_weather_str(data->precipitation_hours);
+    _destroy_weather_str(data->precipitation_probability_max);
+    _destroy_weather_str(data->wind_speed_10m_max);
+    _destroy_weather_str(data->wind_gusts_10m_max);
+    _destroy_weather_str(data->wind_direction_10m_dominant);
+    _destroy_weather_str(data->shortwave_radiation_sum);
+    _destroy_weather_str(data->et0_fao_evapotranspiration);
+}
+
+void destroy_weather_daily(weather_daily *data)
+{
+    if (data == NULL)
+        return;
+    
+    _destroy_weather_num(data->time);
+    _destroy_weather_num(data->weather_code);
+    _destroy_weather_num(data->temperature_2m_max);
+    _destroy_weather_num(data->temperature_2m_min);
+    _destroy_weather_num(data->apparent_temperature_max);
+    _destroy_weather_num(data->apparent_temperature_min);
+    _destroy_weather_num(data->sunrise);
+    _destroy_weather_num(data->sunset);
+    _destroy_weather_num(data->daylight_duration);
+    _destroy_weather_num(data->sunshine_duration);
+    _destroy_weather_num(data->uv_index_max);
+    _destroy_weather_num(data->uv_index_clear_sky_max);
+    _destroy_weather_num(data->precipitation_sum);
+    _destroy_weather_num(data->rain_sum);
+    _destroy_weather_num(data->showers_sum);
+    _destroy_weather_num(data->snowfall_sum);
+    _destroy_weather_num(data->precipitation_hours);
+    _destroy_weather_num(data->precipitation_probability_max);
+    _destroy_weather_num(data->wind_speed_10m_max);
+    _destroy_weather_num(data->wind_gusts_10m_max);
+    _destroy_weather_num(data->wind_direction_10m_dominant);
+    _destroy_weather_num(data->shortwave_radiation_sum);
+    _destroy_weather_num(data->et0_fao_evapotranspiration);
+}

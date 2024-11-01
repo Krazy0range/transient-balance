@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#define _DEBUG
+
 #define BUFFER_SIZE 1024
 #define MAX_REQUEST_LEN 2048
 
