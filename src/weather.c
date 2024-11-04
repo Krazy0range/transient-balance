@@ -96,6 +96,7 @@ void create_weather_data(weather_data **dest, weather_data *src)
     _create_weather_num(&(*dest)->latitude, src->latitude);
     _create_weather_num(&(*dest)->longitude, src->longitude);
     _create_weather_num(&(*dest)->elevation, src->elevation);
+    _create_weather_str(&(*dest)->temperature_units, src->temperature_units);
     _create_weather_str(&(*dest)->timezone, src->timezone);
     _create_weather_str(&(*dest)->timezone_abbreviation, src->timezone_abbreviation);
 
@@ -371,18 +372,21 @@ weather_data *load_json_weather_data(cJSON *json_root)
     cJSON *json_elevation;
     cJSON *json_timezone;
     cJSON *json_timezone_abbreviation;
+    cJSON *json_temperature_units;
 
     json_latitude = cJSON_GetObjectItem(json_root, "latitude");
     json_longitude = cJSON_GetObjectItem(json_root, "longitude");
     json_elevation = cJSON_GetObjectItem(json_root, "elevation");
     json_timezone = cJSON_GetObjectItem(json_root, "timezone");
     json_timezone_abbreviation = cJSON_GetObjectItem(json_root, "timezone_abbreviation");
+    json_temperature_units = cJSON_GetObjectItem(json_root, "temperature_units");
 
     _load_weather_data_num(&data->latitude, json_latitude);
     _load_weather_data_num(&data->longitude, json_longitude);
     _load_weather_data_num(&data->elevation, json_elevation);
     _load_weather_data_str(&data->timezone, json_timezone);
     _load_weather_data_str(&data->timezone_abbreviation, json_timezone_abbreviation);
+    _load_weather_data_str(&data->temperature_units, json_temperature_units);
 
     /* data subsections */
 
@@ -1225,6 +1229,7 @@ void destroy_weather_data(weather_data *data)
     _destroy_weather_num(data->elevation);
     _destroy_weather_str(data->timezone);
     _destroy_weather_str(data->timezone_abbreviation);
+    _destroy_weather_str(data->temperature_units);
 
     destroy_weather_current_units(data->current_units);
     destroy_weather_current(data->current);

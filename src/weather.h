@@ -67,6 +67,7 @@ struct _weather_data
     double *elevation;
     char *timezone;
     char *timezone_abbreviation;
+    char *temperature_units;
     struct _weather_current_units *current_units;
     struct _weather_current       *current;
     struct _weather_hourly_units  *hourly_units;
