@@ -1,10 +1,26 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "weather.h"
-#include "utils.h"
 
 /* helpers */
+
+char *file_to_string(FILE *file)
+{
+    char *buffer = 0;
+    long length;
+
+    fseek(file, 0, SEEK_END);
+    length = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    buffer = malloc(length);
+    fread(buffer, 1, length-1, file);
+    buffer[length - 1] = '\0';
+    
+    return buffer;
+}
 
 void _load_weather_data_num(double **dest, cJSON *json_src)
 {

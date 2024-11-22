@@ -4,8 +4,9 @@
 #include <time.h>
 #include <fcntl.h>
 
+#include "transientfoundation/transientfoundation.h"
+
 #include "network.h"
-#include "utils.h"
 #include "weather.h"
 
 #define WEATHER_API_URL "https://api.open-meteo.com/v1/forecast?latitude=30.4394&longitude=-97.62&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,cloud_cover"
@@ -84,9 +85,18 @@ int main(int argc, char *argv[])
     time(&t_curr);
     time(&t_last);
 
-    struct termios orig_conf = get_terminal_conf();
+    vec2 w = get_console_size();
+
+    window *win = NULL;
+    window *win_prev = NULL;
+    
+    create_window(&win, w.y, w.x);
+    create_window(&win_prev, w.y, w.x);
+
+    window_fill_color(win, COLOR_BLACK);
+
+    hide_cursor();
     raw_mode_enable();
-    cursor_hide();
 
     while (1)
     {
@@ -100,10 +110,13 @@ int main(int argc, char *argv[])
         t_last = t_curr;
     }
 
-    reset_screen();
+    destroy_window(win);
+    destroy_window(win_prev);
+
     raw_mode_disable();
-    set_terminal_conf(orig_conf);
-    cursor_show();
+    erase_screen();
+    reset_cursor();
+    show_cursor();
 
     return 0;
 }
@@ -111,12 +124,9 @@ int main(int argc, char *argv[])
 void disp_t(time_t t_curr, weather_data *weather)
 {
     struct tm *t = localtime(&t_curr);
-    reset_screen();
-    printf("time\n");
     printf("%02d:%02d:%02d\n",
            t->tm_hour,
            t->tm_min,
            t->tm_sec);
-    printf("weather\n");
     printf("temperature: %.2f\xc2\xb0""F\n", *weather->current->temperature_2m);
 }

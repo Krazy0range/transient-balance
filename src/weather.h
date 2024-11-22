@@ -15,6 +15,8 @@ typedef struct _weather_daily         weather_daily;
 
 /* functions */
 
+char *file_to_string(FILE *file);
+
 /* actually allocates and copies memory */
 
 void create_weather_data(weather_data **dest, weather_data *src);
