@@ -110,6 +110,8 @@ typedef struct _window
 {
     window_coord_t rows;
     window_coord_t cols;
+    window_coord_t width;
+    window_coord_t height;
     frag_char *frag_chars;
 } window;
 
@@ -126,5 +128,12 @@ void window_set_pixel
 void window_fill_color(window *win, color_t c);
 int window_check_pixel_bounds
 (window *win, window_coord_t x, window_coord_t y);
+
+/*
+ * utility drawing functions
+ */
+
+void window_draw_line
+(window *win, window_coord_t x1, window_coord_t y1, window_coord_t x2, window_coord_t y2, color_t c);
 
 #endif

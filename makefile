@@ -1,17 +1,22 @@
-.PHONY: compile debug wget
+TARGET = out
+OBJ_FILES = src/main.o src/network.o src/weather.o
 
-IFLAGS := -I src/ -I include/
-LFLAGS := -L lib/ -lcjson -ltransientfoundation -rpath lib
-WFLAGS := -Wall -Wextra -Wno-unused-parameter -Wno-unused-variable
-EXEC := out
+INCLUDE_DIRS = $(shell find include/ -type d)
+INCLUDE_FILES = $(shell find include/ -type f -name "*")
+LIB_FILES = $(shell find lib/ -type f -name "*")
 
-GCC_CMD := gcc src/*.c -o $(EXEC) $(IFLAGS) $(LFLAGS) $(WFLAGS)
+IFLAGS = -I src/ -I include/
+LFLAGS = -L lib/ -lcjson -ltransientfoundation -rpath lib
+WFLAGS = -Wall -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-unused-command-line-argument
+FLAGS = $(IFLAGS) $(LFLAGS) $(WFLAGS)
 
-compile:
-	$(GCC_CMD)
+$(TARGET): $(OBJ_FILES) $(INCLUDE_DIRS) $(INCLUDE_FILES) $(LIB_FILES)
+	gcc -o $(TARGET) $(OBJ_FILES) $(FLAGS)
 
-debug:
-	$(GCC_CMD) -fsanitize=address -v
+$(OBJ_FILES): %.o: %.c
+	gcc -c $^ -o $@ $(FLAGS)
 
-wget:
-	gcc -o wget wget.c
+clean:
+	rm -rf src/*.o
+	rm -rf .DS_Store
+	rm -rf include/.DS_Store
