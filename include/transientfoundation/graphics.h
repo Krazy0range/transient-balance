@@ -1,5 +1,5 @@
-#ifndef GRAPHICS_H
-#define GRAPHICS_H
+#ifndef TRANSIENT_FOUNDATION_GRAPHICS_H
+#define TRANSIENT_FOUNDATION_GRAPHICS_H
 
 #include "utils.h"
 
@@ -121,19 +121,12 @@ void destroy_window(window *win);
 void copy_window(window *src, window *dest);
 void render_window_full(window *win);
 void render_window(window *win, window* win_prev);
-static inline window_index_t window_index
+window_index_t window_index
 (window *win, window_coord_t row, window_coord_t col);
 void window_set_pixel
 (window *win, window_coord_t x, window_coord_t y, color_t c);
 void window_fill_color(window *win, color_t c);
 int window_check_pixel_bounds
 (window *win, window_coord_t x, window_coord_t y);
-
-/*
- * utility drawing functions
- */
-
-void window_draw_line
-(window *win, window_coord_t x1, window_coord_t y1, window_coord_t x2, window_coord_t y2, color_t c);
 
 #endif
