@@ -6,9 +6,14 @@ INCLUDE_FILES = $(shell find include/ -type f -name "*")
 LIB_FILES = $(shell find lib/ -type f -name "*")
 
 IFLAGS = -I src/ -I include/
-LFLAGS = -L lib/ -lcjson -ltransientextension -ltransientfoundation -rpath lib
+LFLAGS = -L lib/ -lcjson -ltransientextension -ltransientfoundation
 WFLAGS = -Wall -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-unused-command-line-argument
 FLAGS = $(IFLAGS) $(LFLAGS) $(WFLAGS)
+
+UNAME_S = $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	LFLAGS += -rpath lib
+endif
 
 $(TARGET): $(OBJ_FILES) $(INCLUDE_DIRS) $(INCLUDE_FILES) $(LIB_FILES)
 	gcc -o $(TARGET) $(OBJ_FILES) $(LFLAGS)
