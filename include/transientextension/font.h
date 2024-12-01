@@ -3,6 +3,11 @@
 
 #include <stdint.h>
 
+/*
+ * I made this font. Check it out at https://fontstruct.com/fontstructions/show/2582143/fivebyfive-8
+ * Licensed under FontStruct Non-Commercial License.
+ */
+
 #define FONT_WIDTH 5
 #define FONT_HEIGHT 5
 #define FONT_GLYPH_COUNT 95
