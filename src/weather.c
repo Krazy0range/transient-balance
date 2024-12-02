@@ -19,7 +19,7 @@ char *file_to_string(FILE *file)
     buffer = malloc(length);
     fread(buffer, 1, length-1, file);
     buffer[length - 1] = '\0';
-    
+
     return buffer;
 }
 
@@ -27,10 +27,10 @@ void _load_weather_data_num(double **dest, cJSON *json_src)
 {
     if (cJSON_IsNumber(json_src))
         *dest = (double *) &json_src->valuedouble;
-    
+
     if (*dest == NULL)
         return;
-    
+
 #ifdef _DEBUG
     fprintf(stderr, "_load_weather_data_num:%p\n", *dest);
 #endif
@@ -39,12 +39,11 @@ void _load_weather_data_num(double **dest, cJSON *json_src)
 
 void _load_weather_data_str(char **dest, cJSON *json_src)
 {
-    if (cJSON_IsString(json_src))
-        *dest = (char *) json_src->valuestring;
-    
+    *dest = cJSON_GetStringValue(json_src);
+
     if (*dest == NULL)
         return;
-    
+
 #ifdef _DEBUG
     fprintf(stderr, "_load_weather_data_str:%p\n", *dest);
 #endif

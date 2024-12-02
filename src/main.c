@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     int response_fd = open("response.txt", O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
     int body_fd     = open("body.txt",     O_RDWR | O_TRUNC | O_CREAT, S_IWUSR + S_IRUSR);
     int err;
-    
+
     /* get api response */
 
 #ifdef _DEBUG
@@ -100,10 +100,11 @@ int main(int argc, char *argv[])
 
     window *win = NULL;
     window *win_prev = NULL;
-    
+
     create_window(&win, w.y, w.x);
     create_window(&win_prev, w.y, w.x);
 
+    struct termios conf = terminal_conf_save();
     hide_cursor();
     raw_mode_enable();
 
@@ -116,7 +117,7 @@ int main(int argc, char *argv[])
 
         if (was_kbhit() && getchar())
             break;
-        
+
         if (t_delta)
         {
             display(win, win_prev, data);
@@ -129,12 +130,13 @@ int main(int argc, char *argv[])
     destroy_window(win);
     destroy_window(win_prev);
 
-    // destroy_weather_data(data);
+    destroy_weather_data(data);
 
     raw_mode_disable();
     erase_screen();
     reset_cursor();
     show_cursor();
+    terminal_conf_load(conf);
 
     return 0;
 }
