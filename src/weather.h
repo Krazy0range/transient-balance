@@ -3,7 +3,7 @@
 
 #define _DEBUG
 
-#include "cJSON/cJSON.h"
+#include "cjson/cJSON.h"
 
 typedef struct _weather_data          weather_data;
 typedef struct _weather_current_units weather_current_units;
